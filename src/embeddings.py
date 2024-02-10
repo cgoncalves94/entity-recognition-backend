@@ -4,7 +4,6 @@ tokenizer = AutoTokenizer.from_pretrained("sentence-transformers/all-MiniLM-L6-v
 model = AutoModel.from_pretrained("sentence-transformers/all-MiniLM-L6-v2")
 
 def get_embedding(text):
-  # Detailed explanation of the function's purpose
   """
   Get the embedding representation of the given text.
 

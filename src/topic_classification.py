@@ -1,5 +1,7 @@
 import os
 from bertopic import BERTopic
+import configparser
+
 
 def load_bertopic_model(model_dir, model_name="bertopic_model_entity"):
   """
@@ -12,13 +14,24 @@ def load_bertopic_model(model_dir, model_name="bertopic_model_entity"):
   Returns:
     BERTopic: The loaded BERTopic model.
   """
+  
+  # Create a new ConfigParser object
+  config = configparser.ConfigParser()
+
+  # Read the configuration from a file
+  config.read('config.ini')
+
+  # Get the default model name from the configuration
+  default_model_name = config.get('DEFAULT', 'model_name')
+
+  
   model_path = os.path.join(model_dir, model_name)
   if os.path.exists(model_path):
     # Load the model from the specified path if it exists
     topic_model = BERTopic.load(model_path)
   else:
-    # Load a default model from the internet if the specified model is not found
-    topic_model = BERTopic.load("MaartenGr/BERTopic_Wikipedia")
+    # Load from the internet a default model defined on config.ini if the specified model is not found
+    topic_model = BERTopic.load(default_model_name)
     # Create the model directory if it does not exist
     if not os.path.exists(model_dir):
       os.makedirs(model_dir)
