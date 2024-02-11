@@ -1,6 +1,6 @@
 # Tech Entity Recognition
 
-This project is a sophisticated Python application designed to perform technology entity recognition and topic classification. It leverages the power of Natural Language Processing (NLP) and Machine Learning (ML) to analyze text and extract meaningful insights.
+This project is a sophisticated Python application designed to perform technology entity recognition, topic classification, and technology recommendation. It leverages the power of Natural Language Processing (NLP) and Machine Learning (ML) to analyze text and extract meaningful insights.
 
 The application uses a BERTopic model, a topic modeling technique that utilizes transformers and c-TF-IDF to create dense clusters of similar documents. This model is used to classify the text into various topics.
 
@@ -8,7 +8,7 @@ In addition, the application uses Spacy, a powerful library for advanced NLP in 
 
 The application also uses the `sentence-transformers/all-MiniLM-L6-v2` model to generate embeddings for the input text. These embeddings capture the contextual meaning of the text and are used in the dynamic scoring algorithm to measure the relevance of entities to the text and topic keywords.
 
-The combination of these techniques allows the application to dynamically score entities based on their relevance to the text and the topic keywords, providing valuable insights into the analyzed text.
+The combination of these techniques allows the application to dynamically score entities based on their relevance to the text and the topic keywords, providing valuable insights into the analyzed text. Furthermore, the application provides technology recommendations based on the scored entities, making it a useful tool for technology-related decision-making processes.
 
 ## Dependencies
 
@@ -36,6 +36,7 @@ The project is structured as follows:
     -   `entity_extraction.py`: Contains functions for extracting technology-related entities from text.
     -   `topic_classification.py`: Contains functions for classifying text into topics.
     -   `dynamic_scoring.py`: Contains functions for dynamically scoring entities based on their relevance to the text and the topic keywords.
+    -   `recommendation.py`: Contains functions for generating technology recommendations based on scored entities.
     -   `utilities.py`: Contains utility functions like `load_json_file`.
 -   `models/`: This directory contains the BERTopic model used for topic classification.
 -   `data/`: This directory contains data files like `tech_entities.json`, which contains patterns and information about different technology-related entities.

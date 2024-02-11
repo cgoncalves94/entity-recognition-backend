@@ -36,10 +36,10 @@ def main():
     ]
     
     input_text2 = [
-      "We need a user-friendly UI with a responsive design for our frontend.",
-      "The backend should use a REST API and connect to a relational SQL database.",
-      "Our application must be scalable and deployable on AWS infrastructure.",
-      "We also need the appropriate GitHub repository and Implement CI/CD pipelines in GitHub."
+        "We need a user-friendly UI with a responsive design for our frontend.",
+        "The backend should use a REST API and connect to a relational SQL database.",
+        "Our application must be scalable and deployable on AWS infrastructure.",
+        "We also need the appropriate GitHub repository and Implement CI/CD pipelines in GitHub."
     ]
     
     # Initialize a set to keep track of entities that have already been extracted.
