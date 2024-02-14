@@ -22,7 +22,7 @@ def initialize_matcher_with_patterns(tech_entities):
   # Return the matcher with all the added patterns
   return matcher
 
-def extract_tech_entities(text, tech_entities, matcher, already_extracted=None):
+def extract_tech_entities(text, tech_entities, matcher):
   """
   Extracts technology entities from the given text using a spaCy matcher.
 
@@ -30,19 +30,17 @@ def extract_tech_entities(text, tech_entities, matcher, already_extracted=None):
     text (str): The input text from which to extract entities.
     tech_entities (dict): A dictionary containing information about the technology entities.
     matcher (spacy.matcher.Matcher): The spaCy matcher object used for entity matching.
-    already_extracted (set, optional): A set of already extracted entities. Defaults to None.
 
   Returns:
-    tuple: A tuple containing a list of unique extracted entities and the updated set of already extracted entities.
+    list: A list of dictionaries containing information about the extracted entities.
   """
-  if already_extracted is None:
-    already_extracted = set()
+
   # Process the text with the spaCy NLP pipeline to create a document object
   doc = nlp(text)
   # Use the matcher to find all matches in the document
   matches = matcher(doc)
-  # Initialize a list to store unique entities found in the text
-  unique_entities = []
+  # Initialize a list to store entities found in the text
+  entities = []
   # Iterate over each match to extract the entity details
   for match_id, start, end in matches:
     # Retrieve the string representation of the entity's match ID
@@ -57,9 +55,8 @@ def extract_tech_entities(text, tech_entities, matcher, already_extracted=None):
       "description": entity_details['description'],
       "score": entity_details['score']
     }
-    # Add the entity to the set of already extracted entities to avoid duplicates
-    already_extracted.add(entity_key)
     # Append the entity's details to the list of unique entities
-    unique_entities.append(extracted_entity)
-  # Return the list of unique entities and the set of already extracted entities
-  return unique_entities, already_extracted
+    entities.append(extracted_entity)
+    
+  # Return the list of entities 
+  return entities

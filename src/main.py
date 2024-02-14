@@ -1,9 +1,9 @@
 # Import necessary modules from the src directory
-from src.entity_extraction import extract_tech_entities, initialize_matcher_with_patterns
-from src.topic_classification import classify_text, load_bertopic_model
-from src.dynamic_scoring import dynamic_score_entities
-from src.recommendation import recommend_technologies
-from src.utilities import load_json_file
+from entity_extraction import extract_tech_entities, initialize_matcher_with_patterns
+from topic_classification import classify_text, load_bertopic_model
+from dynamic_scoring import dynamic_score_entities
+from recommendation import recommend_technologies
+from utilities import load_json_file
 
 def main():
     # Load the technology entities from a JSON file. This file contains patterns and information
@@ -37,20 +37,16 @@ def main():
     
     input_text2 = [
         "We need a user-friendly UI with a responsive design for our frontend.",
-        "The backend should use a REST API and connect to a relational SQL database.",
+        "The backend should use a REST API. ",
+        "We need to store the data in a relational SQL database.",
         "Our application must be scalable and deployable on AWS infrastructure.",
         "We also need the appropriate GitHub repository and Implement CI/CD pipelines in GitHub."
     ]
     
-    # Initialize a set to keep track of entities that have already been extracted.
-    # This is used to avoid extracting the same entity multiple times from the same text.
-    already_extracted = set()
-    
     # Process each text in the input_text list.
     for text in input_text2:
-        # Extract technology-related entities from the text using the matcher and the list of
-        # already extracted entities to avoid duplicates.
-        extracted_entities, already_extracted = extract_tech_entities(text, tech_entities, matcher, already_extracted)
+        # Extract technology-related entities from the text using the matcher
+        extracted_entities = extract_tech_entities(text, tech_entities, matcher)
         
         # Get the category of each extracted entity and join them into a string.
         # This string will be appended to the original text to provide additional context for topic classification.

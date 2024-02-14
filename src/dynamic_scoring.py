@@ -1,5 +1,5 @@
-from .embeddings import get_embedding
-from .similarity import cosine_similarity
+from embeddings import get_embedding
+from similarity import cosine_similarity
 
 def dynamic_score_entities(entities, topic_keywords, user_input, tech_entities):
   """
