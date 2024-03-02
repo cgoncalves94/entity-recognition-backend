@@ -7,31 +7,44 @@ from pydantic import BaseModel, ConfigDict, model_validator
 
 
 def convert_datetime_to_gmt(dt: datetime) -> str:
-    if not dt.tzinfo:
-        dt = dt.replace(tzinfo=ZoneInfo("UTC"))
+  """
+  Convert a datetime object to a string representation in GMT format.
+  If the datetime object does not have a timezone, it is assumed to be in UTC.
+  """
+  if not dt.tzinfo:
+    dt = dt.replace(tzinfo=ZoneInfo("UTC"))
 
-    return dt.strftime("%Y-%m-%dT%H:%M:%S%z")
+  return dt.strftime("%Y-%m-%dT%H:%M:%S%z")
 
 
 class CustomModel(BaseModel):
-    model_config = ConfigDict(
-        json_encoders={datetime: convert_datetime_to_gmt},
-        populate_by_name=True,
-    )
+  """
+  A custom base model that provides additional functionality.
+  """
 
-    @model_validator(mode="before")
-    @classmethod
-    def set_null_microseconds(cls, data: dict[str, Any]) -> dict[str, Any]:
-        datetime_fields = {
-            k: v.replace(microsecond=0)
-            for k, v in data.items()
-            if isinstance(v, datetime)
-        }
+  model_config = ConfigDict(
+    json_encoders={datetime: convert_datetime_to_gmt},
+    populate_by_name=True,
+  )
 
-        return {**data, **datetime_fields}
+  @model_validator(mode="before")
+  @classmethod
+  def set_null_microseconds(cls, data: dict[str, Any]) -> dict[str, Any]:
+    """
+    Set the microseconds of datetime fields to 0 in the given data dictionary.
+    """
+    datetime_fields = {
+      k: v.replace(microsecond=0)
+      for k, v in data.items()
+      if isinstance(v, datetime)
+    }
 
-    def serializable_dict(self, **kwargs):
-        """Return a dict which contains only serializable fields."""
-        default_dict = self.model_dump()
+    return {**data, **datetime_fields}
 
-        return jsonable_encoder(default_dict)
+  def serializable_dict(self, **kwargs):
+    """
+    Return a dictionary that contains only serializable fields of the model.
+    """
+    default_dict = self.model_dump()
+
+    return jsonable_encoder(default_dict)

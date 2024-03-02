@@ -1,17 +1,22 @@
 from pydantic_settings import BaseSettings
 
 class AuthConfig(BaseSettings):
-    JWT_ALG: str
-    JWT_SECRET: str
-    JWT_EXP: int = 5  # minutes
+  """
+  Configuration class for authentication settings.
+  """
 
-    REFRESH_TOKEN_KEY: str = "refreshToken"
-    REFRESH_TOKEN_EXP: int = 60 * 60 * 24 * 21  # 21 days
+  JWT_ALG: str
+  JWT_SECRET: str
+  JWT_EXP: int = 5  # minutes
 
-    SECURE_COOKIES: bool = True
+  REFRESH_TOKEN_KEY: str = "refreshToken"
+  REFRESH_TOKEN_EXP: int = 60 * 60 * 24 * 21  # 21 days
 
-    class Config:
-        env_file = ".env"
-        extra = "allow"  
+  SECURE_COOKIES: bool = True
 
+  class Config:
+    env_file = ".env"
+    extra = "allow"  
+
+# Create an instance of AuthConfig
 auth_config = AuthConfig()

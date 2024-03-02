@@ -1,13 +1,17 @@
-from pydantic import BaseModel, Field
 from typing import List, Dict
+from pydantic import BaseModel, Field
 
 class InputText(BaseModel):
-    texts: List[str] = Field(..., example=["Your example text here."])
+  """
+  Represents the input text for entity recognition.
+  """
+  texts: List[str] = Field(..., example=["Your example text here."])
 
 class Recommendation(BaseModel):
-    input_text: str
-    predicted_topic_name: str
-    extracted_entities: List[Dict]
-    recommendations: List[Dict]
-    
-    
+  """
+  Represents the recommendation for the input text.
+  """
+  input_text: str
+  predicted_topic_name: str
+  extracted_entities: List[Dict]
+  recommendations: List[Dict]
