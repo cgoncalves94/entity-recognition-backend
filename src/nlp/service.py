@@ -23,7 +23,11 @@ def load_tech_entities():
     """
     Load technology entities from a JSON file.
     """
-    return load_json_file("data/tech_entities.json")
+    
+    # Load the technology entities from the JSON file
+    tech_entities = nlp_config.CORPUS_DIR
+    
+    return load_json_file(tech_entities)
 
 async def initialize_matcher_with_patterns(tech_entities):
     """
