@@ -1,7 +1,15 @@
-from typing import Any
+import logging
+import random
+import string
 
+from typing import Any
 from auth.config import auth_config
 from config import settings
+
+ALPHA_NUM = string.ascii_letters + string.digits
+
+def generate_random_alphanum(length: int = 20) -> str:
+    return "".join(random.choices(ALPHA_NUM, k=length))
 
 
 def get_refresh_token_settings(
@@ -23,3 +31,4 @@ def get_refresh_token_settings(
         "value": refresh_token,
         "max_age": auth_config.REFRESH_TOKEN_EXP,
     }
+    

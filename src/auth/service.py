@@ -6,13 +6,15 @@ from bson import Binary
 from bson.binary import UuidRepresentation
 
 from bson.objectid import ObjectId
-import utils
+
 
 from auth.config import auth_config
 from auth.exceptions import InvalidCredentials
 from auth.schemas import AuthUser
 from auth.security import check_password, hash_password
-from database import Database  
+from auth.utils import generate_random_alphanum
+from database import Database
+
 async def create_user(user: AuthUser) -> Optional[dict[str, Any]]:
     user_data = {
         "email": user.email,
@@ -35,7 +37,7 @@ async def get_user_by_email(email: str) -> Optional[dict[str, Any]]:
 
 async def create_refresh_token(*, user_id: str, refresh_token: str = None) -> str:
     if not refresh_token:
-        refresh_token = utils.generate_random_alphanum(64)
+        refresh_token = generate_random_alphanum(64)
     token_data = {
         "uuid": Binary(uuid.uuid4().bytes, subtype=UuidRepresentation.STANDARD),
         "refresh_token": refresh_token,
