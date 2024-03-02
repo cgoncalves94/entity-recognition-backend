@@ -1,79 +1,52 @@
-# Import necessary modules from the src directory
-from entity_extraction import extract_tech_entities, initialize_matcher_with_patterns
-from topic_classification import classify_text, load_bertopic_model
-from dynamic_scoring import dynamic_score_entities
-from recommendation import recommend_technologies
-from utilities import load_json_file
+from contextlib import asynccontextmanager
+from typing import AsyncGenerator
 
-def main():
-    # Load the technology entities from a JSON file. This file contains patterns and information
-    # about different technology-related entities.
-    tech_entities = load_json_file("data/tech_entities.json")
-    
-    # Initialize a matcher with the loaded tech entities to be used for entity extraction.
-    # The matcher will use the patterns defined in the tech_entities to identify technology-related entities in the text.
-    matcher = initialize_matcher_with_patterns(tech_entities)
-    
-    # Define the directory where the BERTopic model is stored.
-    model_dir = "models/bertopic_model_entity"
-    
-    # Load the BERTopic model from the specified directory.
-    # The BERTopic model is used to classify the text into a topic.
-    topic_model = load_bertopic_model(model_dir)
-    
-    # Retrieve information about the topics from the model, including topic IDs and names.
-    topic_info = topic_model.get_topic_info()
-    
-    # Create a mapping from topic IDs to topic names for easy lookup.
-    topic_name_mapping = dict(zip(topic_info['Topic'], topic_info['Name']))
+import sentry_sdk
+from fastapi import FastAPI
+from starlette.middleware.cors import CORSMiddleware
 
-    # Define example input texts to be processed.
-    # These texts will be processed one by one, and for each text, technology-related entities will be extracted,
-    # the text will be classified into a topic, and the entities will be scored based on their relevance to the text and the topic.
-    input_text = [
-        "In comparing database management systems for our relational database architecture, we're evaluating the performance and features of MySQL versus MongoDB to determine the best fit for our SQL-based transactions.",
-        "For our scalable web application, we're considering NoSQL databases to handle dynamic schemas and large data volumes, debating between MongoDB and MySQL for their flexibility and scalability."
-    ]
-    
-    input_text2 = [
-        "We need a user-friendly UI with a responsive design for our frontend.",
-        "The backend should use a REST API. ",
-        "We need to store the data in a relational SQL database.",
-        "Our application must be scalable and deployable on AWS infrastructure.",
-        "We also need the appropriate GitHub repository and Implement CI/CD pipelines in GitHub."
-    ]
-    
-    # Process each text in the input_text list.
-    for text in input_text2:
-        # Extract technology-related entities from the text using the matcher
-        extracted_entities = extract_tech_entities(text, tech_entities, matcher)
-        
-        # Get the category of each extracted entity and join them into a string.
-        # This string will be appended to the original text to provide additional context for topic classification.
-        entity_names = [entity['category'] for entity in extracted_entities]
-        entity_string = ', '.join(entity_names)
-        
-        # Append the entity string to the original text.
-        text_to_classify = text + ". " + entity_string
+from database import Database  # Ensure this path is correct
+from auth.router import router as auth_router
+from nlp.router import router as nlp_router
+from config import app_configs, settings
 
-        # Classify the text into a topic using the BERTopic model and the mapping of topic names.
-        topic_name, topic_keywords = classify_text(text_to_classify, topic_model, topic_name_mapping)
+@asynccontextmanager
+async def lifespan(app: FastAPI) -> AsyncGenerator:
+    # Startup
+    await Database.connect(settings.DATABASE_URL, settings.DATABASE_NAME)  
 
-        # Dynamically score the extracted entities based on their relevance to the text and the topic keywords.
-        # The scoring is done by comparing the embeddings of the entities and the text.
-        sorted_entities = dynamic_score_entities(extracted_entities, topic_keywords, text, tech_entities)
+    yield
 
-        # Print the results: the original text, the predicted topic name, and the sorted list of entities.
-        print("\n")
-        print(f"Input Text: {text}")
-        print(f"Predicted Topic Name: {topic_name}")
-        print(f"Extracted Entities: {sorted_entities}")
-        
-        # Generate recommendations based on the sorted entities.
-        # The recommendations are the highest-scoring entities for each category.
-        recommendations = recommend_technologies(sorted_entities)
-        print("Recommendations:", recommendations)
+    # Shutdown
+    await Database.close()
 
-# Check if the script is being run directly (as opposed to being imported) and, if so, execute the main function.
-if __name__ == "__main__":
-    main()
+app = FastAPI(**app_configs, lifespan=lifespan)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=settings.CORS_ORIGINS,
+    allow_origin_regex=settings.CORS_ORIGINS_REGEX,
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allow_headers=settings.CORS_HEADERS,
+)
+
+if settings.ENVIRONMENT.is_deployed:
+    sentry_sdk.init(
+        dsn=settings.SENTRY_DSN,
+        environment=settings.ENVIRONMENT.value,  # Ensure this correctly references the environment string
+    )
+
+
+@app.get("/")
+async def root():
+    return {"message": "Welcome to my FastAPI application!"}
+
+
+@app.get("/healthcheck", include_in_schema=False)
+async def healthcheck() -> dict[str, str]:
+    return {"status": "ok"}
+
+
+app.include_router(auth_router, prefix="/auth", tags=["Auth"])
+app.include_router(nlp_router, prefix="/nlp", tags=["NLP"])

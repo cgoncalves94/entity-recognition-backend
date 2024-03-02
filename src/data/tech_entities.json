@@ -551,7 +551,7 @@
     "NoSQL": {
         "type": "Non-Relational Database Model",
         "category": "Requirement",
-        "relatedTechnologies": ["MongoDB", "Redis", "Apache Cassandra"],
+        "relatedTechnologies": ["MongoDB", "Apache Cassandra"],
         "description": "A collection of non-relational data models not adhering to the traditional tabular schema, emphasizing scalability, agility, and adaptability.",
         "patterns": [[{ "LOWER": { "FUZZY1": "nosql" } }]],
         "score": 5
