@@ -3,6 +3,7 @@ from typing import AsyncGenerator
 
 import sentry_sdk
 from fastapi import FastAPI
+
 from starlette.middleware.cors import CORSMiddleware
 
 from database import Database  # Ensure this path is correct
@@ -36,7 +37,6 @@ if settings.ENVIRONMENT.is_deployed:
         dsn=settings.SENTRY_DSN,
         environment=settings.ENVIRONMENT.value,  # Ensure this correctly references the environment string
     )
-
 
 @app.get("/")
 async def root():

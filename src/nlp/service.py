@@ -5,6 +5,7 @@ from spacy.matcher import Matcher
 
 from nlp.utils import load_json_file
 
+import asyncio
 import os
 from nlp.config import nlp_config
 from bertopic import BERTopic
@@ -120,35 +121,35 @@ def extract_tech_entities(text, tech_entities, matcher):
     # Return the list of entities 
     return entities
 
-def load_bertopic_model(model_dir, model_name="bertopic_model_entity"):
-    """
-    Loads a BERTopic model from the specified directory.
 
-    Parameters:
-        model_dir (str): The directory where the model is stored.
-        model_name (str): The name of the model file. Default is "bertopic_model_entity".
-
-    Returns:
-        BERTopic: The loaded BERTopic model.
+async def load_bertopic_model(model_dir, model_name="bertopic_model_entity"):
     """
-    
+    Asynchronously loads a BERTopic model from the specified directory.
+    """
     # Get the default model name from the configuration
     default_model_name = nlp_config.MODEL_NAME
 
-    
     model_path = os.path.join(model_dir, model_name)
+    
+    # Define an async wrapper for BERTopic.load (assuming such a utility exists)
+    async def async_load_model(path):
+        loop = asyncio.get_event_loop()
+        return await loop.run_in_executor(None, BERTopic.load, path)
+    
     if os.path.exists(model_path):
-        # Load the model from the specified path if it exists
-        topic_model = BERTopic.load(model_path)
+        # Asynchronously load the model if it exists
+        topic_model = await async_load_model(model_path)
     else:
-        # Load from the internet a default model defined on config.ini if the specified model is not found
-        topic_model = BERTopic.load(default_model_name)
+        # Asynchronously load the default model if the specified model is not found
+        topic_model = await async_load_model(default_model_name)
         # Create the model directory if it does not exist
         if not os.path.exists(model_dir):
             os.makedirs(model_dir)
         # Save the downloaded model to the specified path
-        topic_model.save(model_path)
-    # Return the loaded or downloaded BERTopic model
+        # Note: Saving a model is not asynchronous in BERTopic, so we use run_in_executor
+        loop = asyncio.get_event_loop()
+        await loop.run_in_executor(None, topic_model.save, model_path)
+    
     return topic_model
 
 def classify_text(text, topic_model, topic_name_mapping):

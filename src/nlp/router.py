@@ -21,7 +21,7 @@ async def process_texts(
     matcher = await initialize_matcher_with_patterns(tech_entities)
     model_dir = nlp_config.MODEL_DIR
     
-    topic_model = load_bertopic_model(model_dir)
+    topic_model = await load_bertopic_model(model_dir)
     topic_info = topic_model.get_topic_info()
     topic_name_mapping = dict(zip(topic_info['Topic'], topic_info['Name']))
     results = []
