@@ -262,6 +262,13 @@
         "patterns": [[{ "LOWER": { "FUZZY1": "flask" } }]],
         "score": 9
     },
+    "FastAPI": {
+        "type": "Web Framework",
+        "category": "Backend",
+        "description": "A modern, fast (high-performance), web framework for building APIs with Python based on standard Python type hints.",
+        "patterns": [[{ "LOWER": { "FUZZY1": "fastapi" } }]],
+        "score": 9
+    },
     "Express.js": {
         "type": "Web Framework",
         "category": "Backend",
@@ -523,6 +530,7 @@
         "category": "Requirement",
         "relatedTechnologies": [
             "Express.js",
+            "FastAPI",
             "Django",
             "Flask",
             "ASP.NET"
