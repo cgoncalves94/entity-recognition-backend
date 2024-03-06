@@ -1,15 +1,17 @@
+import joblib
+import json
+import base64
+from google.oauth2.service_account import Credentials
+from google.cloud import storage
+from io import BytesIO
+
 from transformers import AutoTokenizer, AutoModel
 
 import spacy
 from spacy.matcher import Matcher
 
 from nlp.utils import load_json_file
-
-import asyncio
-import os
 from nlp.config import nlp_config
-from bertopic import BERTopic
-
 
 from scipy.spatial.distance import cosine
 
@@ -122,35 +124,33 @@ def extract_tech_entities(text, tech_entities, matcher):
     return entities
 
 
-async def load_bertopic_model(model_dir, model_name="bertopic_model_entity"):
-    """
-    Asynchronously loads a BERTopic model from the specified directory.
-    """
-    # Get the default model name from the configuration
-    default_model_name = nlp_config.MODEL_NAME
 
-    model_path = os.path.join(model_dir, model_name)
-    
-    # Define an async wrapper for BERTopic.load (assuming such a utility exists)
-    async def async_load_model(path):
-        loop = asyncio.get_event_loop()
-        return await loop.run_in_executor(None, BERTopic.load, path)
-    
-    if os.path.exists(model_path):
-        # Asynchronously load the model if it exists
-        topic_model = await async_load_model(model_path)
-    else:
-        # Asynchronously load the default model if the specified model is not found
-        topic_model = await async_load_model(default_model_name)
-        # Create the model directory if it does not exist
-        if not os.path.exists(model_dir):
-            os.makedirs(model_dir)
-        # Save the downloaded model to the specified path
-        # Note: Saving a model is not asynchronous in BERTopic, so we use run_in_executor
-        loop = asyncio.get_event_loop()
-        await loop.run_in_executor(None, topic_model.save, model_path)
-    
+async def load_bertopic_model_from_gcs(bucket_name, model_object_name):
+    """
+    Load a BERTopic model directly from Google Cloud Storage into memory without saving it locally.
+    """
+
+    # Decode the base64-encoded Google Cloud Service Account credentials
+    sa_key_base64 = nlp_config.GCP_SA_KEY_BASE64
+    sa_key_info = json.loads(base64.b64decode(sa_key_base64).decode('utf-8'))
+
+    # Authenticate with Google Cloud Storage using the decoded credentials
+    credentials = Credentials.from_service_account_info(sa_key_info)
+    storage_client = storage.Client(credentials=credentials, project=sa_key_info['project_id'])
+
+    bucket = storage_client.bucket(bucket_name)
+    blob = bucket.blob(model_object_name)
+
+    # Download the blob to an in-memory byte stream
+    byte_stream = BytesIO()
+    blob.download_to_file(byte_stream)
+    byte_stream.seek(0)  # Seek to the start of the stream
+
+    # Load the BERTopic model from the byte stream
+    topic_model = joblib.load(byte_stream)
+
     return topic_model
+
 
 def classify_text(text, topic_model, topic_name_mapping):
     """

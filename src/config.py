@@ -1,6 +1,6 @@
 from typing import Any, Optional
 
-from pydantic import validator, MongoDsn
+from pydantic import validator
 from pydantic_settings import BaseSettings
 
 from constants import Environment

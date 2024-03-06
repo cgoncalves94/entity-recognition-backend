@@ -7,8 +7,10 @@ class NlpConfig(BaseSettings):
   """
 
   MODEL_NAME: str
-  MODEL_DIR: str
+  BUCKET_NAME: str
   CORPUS_DIR: str
+  GCP_SA_KEY_BASE64: str 
+
 
   class Config:
     """
