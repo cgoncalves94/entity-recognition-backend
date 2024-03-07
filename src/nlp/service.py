@@ -1,9 +1,4 @@
-import joblib
-import json
-import base64
-from google.oauth2.service_account import Credentials
-from google.cloud import storage
-from io import BytesIO
+from bertopic import BERTopic
 
 from transformers import AutoTokenizer, AutoModel
 
@@ -125,29 +120,13 @@ def extract_tech_entities(text, tech_entities, matcher):
 
 
 
-async def load_bertopic_model_from_gcs(bucket_name, model_object_name):
+async def load_bertopic_model(model_object_name):
     """
     Load a BERTopic model directly from Google Cloud Storage into memory without saving it locally.
     """
 
-    # Decode the base64-encoded Google Cloud Service Account credentials
-    sa_key_base64 = nlp_config.GCP_SA_KEY_BASE64
-    sa_key_info = json.loads(base64.b64decode(sa_key_base64).decode('utf-8'))
+    topic_model = BERTopic.load(model_object_name)
 
-    # Authenticate with Google Cloud Storage using the decoded credentials
-    credentials = Credentials.from_service_account_info(sa_key_info)
-    storage_client = storage.Client(credentials=credentials, project=sa_key_info['project_id'])
-
-    bucket = storage_client.bucket(bucket_name)
-    blob = bucket.blob(model_object_name)
-
-    # Download the blob to an in-memory byte stream
-    byte_stream = BytesIO()
-    blob.download_to_file(byte_stream)
-    byte_stream.seek(0)  # Seek to the start of the stream
-
-    # Load the BERTopic model from the byte stream
-    topic_model = joblib.load(byte_stream)
 
     return topic_model
 

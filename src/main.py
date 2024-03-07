@@ -10,7 +10,7 @@ from auth.router import router as auth_router
 from nlp.router import router as nlp_router
 from config import app_configs, settings
 from nlp.config import nlp_config
-from nlp.service import load_bertopic_model_from_gcs
+from nlp.service import load_bertopic_model
 
 # Define an async context manager for the lifespan of the FastAPI application
 @asynccontextmanager
@@ -33,10 +33,8 @@ async def lifespan(app: FastAPI) -> AsyncGenerator:
     await Database.connect(settings.DATABASE_URL, settings.DATABASE_NAME)
     
     # Load BERTopic model and assign it to the application state
-    # Specify your GCS bucket name and the object name (path) for the model
-    bucket_name = nlp_config.BUCKET_NAME
     model_object_name = nlp_config.MODEL_NAME
-    app.state.bertopic_model = await load_bertopic_model_from_gcs(bucket_name, model_object_name)
+    app.state.bertopic_model = await load_bertopic_model(model_object_name)
     print("BERTopic model loaded successfully.")  
     yield
     
@@ -114,10 +112,8 @@ async def lifespan(app: FastAPI) -> AsyncGenerator:
     await Database.connect(settings.DATABASE_URL, settings.DATABASE_NAME)
     
     # Load BERTopic model and assign it to the application state
-    # Specify your GCS bucket name and the object name (path) for the model
-    bucket_name = nlp_config.BUCKET_NAME
     model_object_name = nlp_config.MODEL_NAME
-    app.state.bertopic_model = await load_bertopic_model_from_gcs(bucket_name, model_object_name)
+    app.state.bertopic_model = await load_bertopic_model(model_object_name)
     print("BERTopic model loaded successfully.")  
     yield
     
