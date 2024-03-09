@@ -1,49 +1,75 @@
-from typing import Any, Optional
+from typing import Any
 
-from pydantic import validator
+from pydantic import model_validator, field_validator
 from pydantic_settings import BaseSettings
 
-from constants import Environment
+from src.constants import Environment
 
-# Configuration class for the application
+
 class Config(BaseSettings):
-  DATABASE_URL: str
-  DATABASE_NAME: str  
-  SITE_DOMAIN: str = "myapp.com"
-  ENVIRONMENT: Environment = Environment.PRODUCTION
-  SENTRY_DSN: Optional[str] = None
-  CORS_ORIGINS: list[str]
-  CORS_ORIGINS_REGEX: Optional[str] = None
-  CORS_HEADERS: list[str]
-  APP_VERSION: str = "1"
+  """
+  Configuration class for the application.
+  """
 
-  # Validator for the DATABASE_URL field
-  @validator("DATABASE_URL", pre=True)
+  DATABASE_URL: str
+  DATABASE_NAME: str
+
+  SITE_DOMAIN: str = "myapp.com"
+
+  ENVIRONMENT: Environment = Environment.PRODUCTION
+
+  SENTRY_DSN: str | None = None
+
+  CORS_ORIGINS: list[str]
+  CORS_ORIGINS_REGEX: str | None = None
+  CORS_HEADERS: list[str]
+
+  APP_VERSION: str = "1"
+  
+  @field_validator("DATABASE_URL")
   def validate_database_url(cls, value: str) -> str:
-    if not value.startswith("mongodb://") and not value.startswith("mongodb+srv://"):
+    """
+    Validates the database URL.
+
+    Args:
+      value (str): The database URL to validate.
+
+    Returns:
+      str: The validated database URL.
+
+    Raises:
+      ValueError: If the database URL is invalid.
+    """
+    if not value.startswith("mongodb://") and not value.startswith(
+      "mongodb+srv://"
+    ):
       raise ValueError("Invalid MongoDB URL")
     return value
 
-  # Validator for the SENTRY_DSN field
-  @validator("SENTRY_DSN", pre=True, always=True)
-  def validate_sentry_non_local(cls, value: str, values) -> str:
-    if values.get("ENVIRONMENT").is_deployed and not value:
-      raise ValueError("Sentry DSN must be set in deployed environments")
-    return value
-  
-  class Config:
-    env_file = ".env"
-    extra = "allow"  # Allow extra fields
+  @model_validator(mode="after")
+  def validate_sentry_non_local(self) -> "Config":
+    """
+    Validates the Sentry configuration for non-local environments.
 
+    Returns:
+      Config: The updated configuration.
 
+    Raises:
+      ValueError: If Sentry is not set in a deployed environment.
+    """
+    if self.ENVIRONMENT.is_deployed and not self.SENTRY_DSN:
+      raise ValueError("Sentry is not set")
+
+    return self
+
+# Load the configuration
 settings = Config()
 
+# FastAPI app configurations
 app_configs: dict[str, Any] = {"title": "App API"}
-
-# Set the root path for deployed environments
 if settings.ENVIRONMENT.is_deployed:
-  app_configs["root_path"] = f"/v{settings.APP_VERSION}"
+    app_configs["root_path"] = f"/v{settings.APP_VERSION}"
 
-# Optionally hide docs in production
+# Hide OpenAPI docs in production
 if not settings.ENVIRONMENT.is_debug:
-  app_configs["openapi_url"] = None
+    app_configs["openapi_url"] = None  # hide docs

@@ -2,6 +2,7 @@ import os
 import json
 import aiofiles
 
+
 async def load_json_file(file_path):
     # Detailed explanation of the function's purpose
     """
@@ -19,7 +20,7 @@ async def load_json_file(file_path):
     """
     # Check if the file exists at the given path
     if os.path.exists(file_path):
-        async with aiofiles.open(file_path, mode='r') as file:
+        async with aiofiles.open(file_path, mode="r") as file:
             # Load the JSON content from the file and return it as a dictionary
             return json.loads(await file.read())
     else:

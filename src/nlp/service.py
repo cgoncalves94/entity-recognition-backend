@@ -1,12 +1,13 @@
 from bertopic import BERTopic
+import torch
 
 from transformers import AutoTokenizer, AutoModel
 
 import spacy
 from spacy.matcher import Matcher
 
-from nlp.utils import load_json_file
-from nlp.config import nlp_config
+from src.nlp.utils import load_json_file
+from src.nlp.config import nlp_config
 
 from scipy.spatial.distance import cosine
 
@@ -17,17 +18,19 @@ model = AutoModel.from_pretrained("sentence-transformers/all-MiniLM-L6-v2")
 # Load Spacy model for entity extraction
 nlp = spacy.load("en_core_web_sm")
 
+
 def load_tech_entities():
     """
     Load technology entities from a JSON file.
     """
-    
+
     # Load the technology entities from the JSON file
     tech_entities = nlp_config.CORPUS_DIR
-    
+
     return load_json_file(tech_entities)
 
-async def initialize_matcher_with_patterns(tech_entities):
+
+def initialize_matcher_with_patterns(tech_entities):
     """
     Initialize a spaCy Matcher object with patterns for tech entities.
 
@@ -46,6 +49,7 @@ async def initialize_matcher_with_patterns(tech_entities):
     # Return the matcher with all the added patterns
     return matcher
 
+
 def get_embedding(text):
     """
     Get the embedding representation of the given text.
@@ -57,14 +61,18 @@ def get_embedding(text):
         torch.Tensor: The embedding representation of the text.
     """
     # Tokenize the input text and prepare it for the model
-    inputs = tokenizer(text, return_tensors="pt", padding=True, truncation=True, max_length=512)
+    inputs = tokenizer(
+        text, return_tensors="pt", padding=True, truncation=True, max_length=512
+    )
     # Generate the embeddings by passing the inputs to the model
-    outputs = model(**inputs)
+    with torch.no_grad():  # Disable gradient computation
+        outputs = model(**inputs)
     # Extract the embeddings from the model's output, which is the mean of the last hidden state
     embeddings = outputs.last_hidden_state.mean(1)
     # Return the embeddings after removing the batch dimension
     return embeddings.squeeze()
-
+  
+  
 def cosine_similarity(a, b):
     """
     Calculates the cosine similarity between two vectors.
@@ -78,6 +86,7 @@ def cosine_similarity(a, b):
     """
     # Calculate the cosine similarity, which is 1 minus the cosine distance
     return 1 - cosine(a.detach().numpy(), b.detach().numpy())
+
 
 def extract_tech_entities(text, tech_entities, matcher):
     """
@@ -107,17 +116,16 @@ def extract_tech_entities(text, tech_entities, matcher):
         # Create a dictionary with the entity's details
         extracted_entity = {
             "entity": entity_key,
-            "type": entity_details['type'],
-            "category": entity_details['category'],
-            "description": entity_details['description'],
-            "score": entity_details['score']
+            "type": entity_details["type"],
+            "category": entity_details["category"],
+            "description": entity_details["description"],
+            "score": entity_details["score"],
         }
         # Append the entity's details to the list of unique entities
         entities.append(extracted_entity)
-        
-    # Return the list of entities 
-    return entities
 
+    # Return the list of entities
+    return entities
 
 
 async def load_bertopic_model(model_object_name):
@@ -126,7 +134,6 @@ async def load_bertopic_model(model_object_name):
     """
 
     topic_model = BERTopic.load(model_object_name)
-
 
     return topic_model
 
@@ -146,17 +153,18 @@ def classify_text(text, topic_model, topic_name_mapping):
     # Use the topic model to predict the topic for the given text
     # The transform method returns a tuple with the predicted topic(s) and their probabilities
     predicted_topic, _ = topic_model.transform([text])
-    
+
     # Retrieve the topic name using the predicted topic ID. If the ID is not found,
     # default to "Unknown Topic"
     topic_name = topic_name_mapping.get(predicted_topic[0], "Unknown Topic")
-    
+
     # Get the list of keywords for the predicted topic. The get_topic method returns
     # a list of tuples with keywords and their relevance scores, but we only need the keywords
     keywords = [word for word, _ in topic_model.get_topic(predicted_topic[0])]
-    
+
     # Return the predicted topic name and the associated keywords
     return topic_name, keywords
+
 
 def dynamic_score_entities(entities, topic_keywords, user_input, tech_entities):
     """
@@ -177,15 +185,19 @@ def dynamic_score_entities(entities, topic_keywords, user_input, tech_entities):
     scores = {}
 
     # Identify explicit mentions of entities in the user input.
-    explicit_mentions = [entity_dict['entity'] for entity_dict in entities if entity_dict['entity'].lower() in user_input.lower()]
+    explicit_mentions = [
+        entity_dict["entity"]
+        for entity_dict in entities
+        if entity_dict["entity"].lower() in user_input.lower()
+    ]
 
     # Prepare a list of entities to be scored. If an entity has related technologies,
     # add those to the list instead of the entity itself.
     updated_entities = []
     for entity_dict in entities:
-        entity_name = entity_dict['entity']
-        if 'relatedTechnologies' in tech_entities.get(entity_name, {}):
-            updated_entities.extend(tech_entities[entity_name]['relatedTechnologies'])
+        entity_name = entity_dict["entity"]
+        if "relatedTechnologies" in tech_entities.get(entity_name, {}):
+            updated_entities.extend(tech_entities[entity_name]["relatedTechnologies"])
         else:
             updated_entities.append(entity_name)
 
@@ -201,8 +213,11 @@ def dynamic_score_entities(entities, topic_keywords, user_input, tech_entities):
         # Calculate the cosine similarity between the user input and the entity.
         similarity = cosine_similarity(input_embedding, entity_embedding)
         # Calculate the relevance score of the entity based on its similarity to the topic keywords.
-        relevance_score = sum(cosine_similarity(get_embedding(keyword), entity_embedding) for keyword in topic_keywords) / len(topic_keywords)
-        
+        relevance_score = sum(
+            cosine_similarity(get_embedding(keyword), entity_embedding)
+            for keyword in topic_keywords
+        ) / len(topic_keywords)
+
         # The combined score is the sum of the similarity and the relevance score.
         combined_score = similarity + relevance_score
 
@@ -224,15 +239,23 @@ def dynamic_score_entities(entities, topic_keywords, user_input, tech_entities):
         # Get the maximum score in the category.
         max_score = max(entities_scores.values(), default=1)
         # Normalize the scores by dividing each score by the maximum score.
-        normalized_scores = {entity_name: score / max_score for entity_name, score in entities_scores.items()}
+        normalized_scores = {
+            entity_name: score / max_score
+            for entity_name, score in entities_scores.items()
+        }
         # Sort the entities by their normalized scores in descending order.
-        sorted_entities = sorted(normalized_scores.items(), key=lambda x: x[1], reverse=True)
+        sorted_entities = sorted(
+            normalized_scores.items(), key=lambda x: x[1], reverse=True
+        )
         # Add the sorted entities to the sorted_entities_by_category dictionary.
         sorted_entities_by_category[category] = sorted_entities
 
-    return [{"entity_name": entity_name, "score": score, "category": category} 
-        for category, entities_scores in sorted_entities_by_category.items() 
-        for entity_name, score in entities_scores]
+    return [
+        {"entity_name": entity_name, "score": score, "category": category}
+        for category, entities_scores in sorted_entities_by_category.items()
+        for entity_name, score in entities_scores
+    ]
+
 
 def recommend_technologies(entities):
     """
@@ -250,11 +273,16 @@ def recommend_technologies(entities):
     # Iterate through entities to find the highest-scoring entity for each category
     for entity in entities:
         category = entity["category"]
-        if category not in best_entity_per_category or best_entity_per_category[category]["score"] < entity["score"]:
+        if (
+            category not in best_entity_per_category
+            or best_entity_per_category[category]["score"] < entity["score"]
+        ):
             best_entity_per_category[category] = entity
 
     # Prepare recommendations based on the best entity for each category
-    recommendations = [{"category": category, "recommendation": entity["entity_name"]} 
-                    for category, entity in best_entity_per_category.items()]
+    recommendations = [
+        {"category": category, "recommendation": entity["entity_name"]}
+        for category, entity in best_entity_per_category.items()
+    ]
 
     return recommendations
