@@ -1,47 +1,49 @@
 # Tech Entity Recognition
 
-This project is a sophisticated FastAPI application designed to perform technology entity recognition, topic classification, and technology recommendation. It leverages the power of Natural Language Processing (NLP) and Machine Learning (ML) to analyze text and extract meaningful insights, all within a secure and efficient web service.
+This FastAPI application is designed for technology entity recognition, topic classification, technology recommendation, and dynamic scoring. It leverages Natural Language Processing (NLP) and Machine Learning (ML) techniques, utilizing libraries and models such as Spacy, BERTopic, and sentence-transformers, all within a secure and efficient web service.
 
-The application uses a BERTopic model, a topic modeling technique that utilizes transformers and c-TF-IDF to create dense clusters of similar documents. This model is used to classify the text into various topics.
+## Key Features
 
-In addition, the application uses Spacy, a powerful library for advanced NLP in Python, for entity extraction. It identifies and extracts technology-related entities from the text, providing a deeper understanding of the content.
+- Entity Recognition and Classification: Identifies and categorizes technical entities using Spacy.
+- Topic Classification with BERTopic: Enhances text understanding and categorization into predefined topics.
+- Dynamic Scoring: Adjusts entity relevance scores based on context using `sentence-transformers/all-MiniLM-L6-v2`.
+- Recommendation System: Suggests relevant technologies based on broader concepts identified in user inputs.
+- JWT-based Authentication: Secures access to NLP functionalities, with credentials and tokens stored in MongoDB.
+- Docker Integration: Ensures consistent and scalable deployment across environments.
 
-The application also uses the `sentence-transformers/all-MiniLM-L6-v2` model to generate embeddings for the input text. These embeddings capture the contextual meaning of the text and are used in the dynamic scoring algorithm to measure the relevance of entities to the text and topic keywords.
+## Installation and Running the Application
 
-The combination of these techniques allows the application to dynamically score entities based on their relevance to the text and the topic keywords, providing valuable insights into the analyzed text. Furthermore, the application provides technology recommendations based on the scored entities, making it a useful tool for technology-related decision-making processes.
-
-The application is secured with a JWT-based authentication system, ensuring that only authenticated users can access the NLP services. User credentials and refresh tokens are securely stored in MongoDB, facilitating efficient token management and validation processes.
-
-## Dependencies
-
-
-You can install all dependencies using the following command:
+To run the application using Docker, ensure Docker and docker-compose are installed on your system. Then execute:
 
 ```bash
-pip install -r requirements.txt
+docker network create app_main
+docker-compose up -d --build
 ```
+This command builds the Docker image and starts the service. The application can be accessed at http://localhost:16000 with API documentation available at http://localhost:16000/docs.
 
 ## Project Structure
 
 The project is structured as follows:
 
--   `main.py`: The main script that runs the application.
+
 -   `src/`: This directory contains the source code for the application.
     -   `auth/`: Contains the authentication system's source code.
     -   `nlp/`: Contains the NLP services' source code.
--   `models/`: This directory contains the BERTopic model used for topic classification.
+    -   `main.py`: The main script that runs the application.
 -   `data/`: This directory contains data files like `tech_entities.json`, which contains patterns and information about different technology-related entities.
+-   `tests/`: Contains automated tests for the application, ensuring reliability and functionality. This includes tests for authentication routes and other critical functionalities.
 
-## Running the Application
 
-You can run the application using the following command:
+## Running Tests
+
+To run automated tests within the Docker environment, use the following command:
 
 ```bash
-uvicorn main:app --reload
+docker compose exec app pytest
 ```
+This command executes the test suite, ensuring that all functionalities work as expected within the Dockerized application.
 
-This will start the FastAPI application with hot-reloading enabled. You can access the application at http://localhost:8000 and the API documentation at http://localhost:8000/docs.
 
-## Future Work
+## Conclusion
 
-The project is poised for further enhancements and feature additions.
+The Tech Entity Recognition project has evolved significantly, incorporating Docker for deployment, enhancing security with JWT authentication, and improving NLP functionalities. These advancements provide a solid foundation for further development and innovation.

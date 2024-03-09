@@ -1,5 +1,4 @@
 # flyctl launch added from .gitignore
-**/pytest.ini 
 
 # Byte-compiled / optimized / DLL files
 **/__pycache__
