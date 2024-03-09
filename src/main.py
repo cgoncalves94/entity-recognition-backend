@@ -5,11 +5,11 @@ import sentry_sdk
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 
-from src.database import Database
 from src.auth.router import router as auth_router
-from src.nlp.router import router as nlp_router
 from src.config import app_configs, settings
+from src.database import Database
 from src.nlp.config import nlp_config
+from src.nlp.router import router as nlp_router
 from src.nlp.service import load_bertopic_model
 
 
@@ -68,6 +68,7 @@ if settings.ENVIRONMENT.is_deployed:
         dsn=settings.SENTRY_DSN,
         environment=settings.ENVIRONMENT.value,  # Ensure this correctly references the environment string
     )
+
 
 
 # Define the root endpoint

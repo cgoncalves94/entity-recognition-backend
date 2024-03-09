@@ -1,10 +1,9 @@
-from src.auth.service import delete_user_by_email  
-from typing import Any, Generator, AsyncGenerator
+from typing import AsyncGenerator
 
-import pytest
 import pytest_asyncio
 from async_asgi_testclient import TestClient
 
+from src.auth.service import delete_user_by_email
 from src.main import app
 
 
@@ -15,7 +14,7 @@ async def client() -> AsyncGenerator[TestClient, None]:
 
     async with TestClient(app, scope=scope) as client:
         yield client
-        
+
 @pytest_asyncio.fixture
 async def user_cleanup():
     # No setup needed before yielding

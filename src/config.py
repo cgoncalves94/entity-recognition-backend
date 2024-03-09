@@ -1,6 +1,6 @@
 from typing import Any
 
-from pydantic import model_validator, field_validator
+from pydantic import field_validator, model_validator
 from pydantic_settings import BaseSettings
 
 from src.constants import Environment
@@ -25,7 +25,7 @@ class Config(BaseSettings):
   CORS_HEADERS: list[str]
 
   APP_VERSION: str = "1"
-  
+
   @field_validator("DATABASE_URL")
   def validate_database_url(cls, value: str) -> str:
     """

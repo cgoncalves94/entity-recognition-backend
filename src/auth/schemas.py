@@ -1,5 +1,7 @@
 import re
+
 from pydantic import EmailStr, Field, field_validator
+
 from src.models import CustomModel
 
 # Regular expression pattern for a strong password

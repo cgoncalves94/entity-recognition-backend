@@ -1,6 +1,5 @@
 import random
 import string
-
 from typing import Any
 
 from src.auth.config import auth_config

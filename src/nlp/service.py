@@ -1,15 +1,12 @@
-from bertopic import BERTopic
-import torch
-
-from transformers import AutoTokenizer, AutoModel
-
 import spacy
-from spacy.matcher import Matcher
-
-from src.nlp.utils import load_json_file
-from src.nlp.config import nlp_config
-
+import torch
+from bertopic import BERTopic
 from scipy.spatial.distance import cosine
+from spacy.matcher import Matcher
+from transformers import AutoModel, AutoTokenizer
+
+from src.nlp.config import nlp_config
+from src.nlp.utils import load_json_file
 
 # Load embeddings model
 tokenizer = AutoTokenizer.from_pretrained("sentence-transformers/all-MiniLM-L6-v2")
@@ -71,8 +68,8 @@ def get_embedding(text):
     embeddings = outputs.last_hidden_state.mean(1)
     # Return the embeddings after removing the batch dimension
     return embeddings.squeeze()
-  
-  
+
+
 def cosine_similarity(a, b):
     """
     Calculates the cosine similarity between two vectors.

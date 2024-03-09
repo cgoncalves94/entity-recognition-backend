@@ -1,6 +1,7 @@
+from typing import Optional
+
 from motor.motor_asyncio import AsyncIOMotorClient
 from pymongo.errors import OperationFailure
-from typing import Optional
 
 
 class Database:

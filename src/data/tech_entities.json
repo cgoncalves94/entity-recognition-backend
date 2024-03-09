@@ -48,7 +48,6 @@
         ],
         "score": 8
     },
-
     "MongoDB": {
         "type": "NoSQL",
         "category": "Database",
@@ -561,7 +560,10 @@
         "category": "Requirement",
         "relatedTechnologies": ["MongoDB", "Apache Cassandra"],
         "description": "A collection of non-relational data models not adhering to the traditional tabular schema, emphasizing scalability, agility, and adaptability.",
-        "patterns": [[{ "LOWER": { "FUZZY1": "nosql" } }]],
+        "patterns": [
+            [{ "LOWER": { "FUZZY1": "nosql" } }],
+            [{ "LOWER": { "FUZZY1": "non-relational" } }, { "LOWER": { "FUZZY1": "database" } }]
+        ],
         "score": 5
     },
 
