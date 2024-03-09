@@ -21,6 +21,7 @@ docker-compose up -d --build
 ```
 This command builds the Docker image and starts the service. The application can be accessed at http://localhost:16000 with API documentation available at http://localhost:16000/docs.
 
+
 ## Project Structure
 
 The project is structured as follows:
