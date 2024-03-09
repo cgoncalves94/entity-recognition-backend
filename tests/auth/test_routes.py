@@ -20,8 +20,6 @@ async def test_register(client: TestClient, user_cleanup) -> None:
     assert resp_json == {"email": "email@fake.com"}
 
 
-
-
 @pytest.mark.asyncio
 async def test_register_email_taken(
     client: TestClient, monkeypatch: pytest.MonkeyPatch

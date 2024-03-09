@@ -8,7 +8,7 @@ class InputText(BaseModel):
     Represents the input text for entity recognition.
     """
 
-    texts: List[str] = Field(..., json_schema_extra={'example': 'Example Value'})
+    texts: List[str] = Field(..., json_schema_extra={"example": "Example Value"})
 
 
 class Recommendation(BaseModel):

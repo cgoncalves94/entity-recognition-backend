@@ -70,7 +70,6 @@ if settings.ENVIRONMENT.is_deployed:
     )
 
 
-
 # Define the root endpoint
 @app.get("/")
 async def root():

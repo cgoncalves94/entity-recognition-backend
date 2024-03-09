@@ -35,6 +35,7 @@ async def create_user(user: AuthUser) -> Optional[dict[str, Any]]:
         return user_data
     return None
 
+
 async def delete_user_by_email(email: str) -> None:
     """
     Delete a user from the database by their email.
