@@ -15,8 +15,11 @@ jobs:
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
+        with:
+          buildkitd-flags: --debug
 
       - name: Cache Docker layers
+        id: cache
         uses: actions/cache@v2
         with:
           path: /tmp/.buildx-cache
@@ -33,14 +36,14 @@ jobs:
         run: |
           flyctl deploy --dockerfile ./Dockerfile --remote-only -a tech-entity-recognition \
             --build-arg BUILDKIT_INLINE_CACHE=1 \
-            --cache-from=type=local,src=/tmp/.buildx-cache
+            --cache-from=type=local,src=/tmp/.buildx-cache \
+            --cache-to=type=local,dest=/tmp/.buildx-cache-new
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
       - name: Save Docker layers cache
+        if: steps.cache.outputs.cache-hit != 'true'
         uses: actions/cache@v2
         with:
-          path: /tmp/.buildx-cache
+          path: /tmp/.buildx-cache-new
           key: ${{ runner.os }}-buildx-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-buildx-
