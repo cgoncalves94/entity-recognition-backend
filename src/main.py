@@ -36,7 +36,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator:
         # Load BERTopic model and assign it to the application state
         model_object_name = nlp_config.MODEL_NAME
         app.state.bertopic_model = await load_bertopic_model(model_object_name)
-        print("BERTopic model loaded successfully.")
+        print("BERTopic model loaded successfully. ")
         yield
 
     except Exception as e:
