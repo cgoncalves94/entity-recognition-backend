@@ -4,6 +4,11 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'src/**'
+      - 'Dockerfile'
+      - 'tests/**'
+  workflow_dispatch:
 
 jobs:
   deploy:

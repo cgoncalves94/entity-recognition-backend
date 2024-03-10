@@ -4,12 +4,23 @@ This FastAPI application is designed for technology entity recognition, topic cl
 
 ## Key Features
 
-- Entity Recognition and Classification: Identifies and categorizes technical entities using Spacy.
-- Topic Classification with BERTopic: Enhances text understanding and categorization into predefined topics.
-- Dynamic Scoring: Adjusts entity relevance scores based on context using `sentence-transformers/all-MiniLM-L6-v2`.
-- Recommendation System: Suggests relevant technologies based on broader concepts identified in user inputs.
-- JWT-based Authentication: Secures access to NLP functionalities, with credentials and tokens stored in MongoDB.
-- Docker Integration: Ensures consistent and scalable deployment across environments.
+- **Entity Recognition and Classification**: Identifies and categorizes technical entities using Spacy.
+- **Topic Classification with BERTopic**: Enhances text understanding and categorization into predefined topics.
+- **Dynamic Scoring**: Adjusts entity relevance scores based on context using `sentence-transformers/all-MiniLM-L6-v2`.
+- **Recommendation System**: Suggests relevant technologies based on broader concepts identified in user inputs.
+- **JWT-based Authentication**: Secures access to NLP functionalities, with credentials and tokens stored in MongoDB.
+- **Docker Integration**: Ensures consistent and scalable deployment across environments.
+- **CI/CD Pipeline**: Automates testing and deployment processes using GitHub Actions, ensuring that the application is always up-to-date and stable.
+
+
+### Deployment Process
+
+1. **GitHub Actions Workflow**: Triggered by every push to the `main` branch.
+2. **Docker Build**: Containerizes the application, ensuring environmental consistency.
+3. **Fly.io Deployment**: Deploys the Dockerized application to Fly.io, leveraging its robust platform for running containerized applications.
+
+For more details on our CI/CD process, refer to the `.github/workflows/deploy.yml` file in our repository.
+
 
 ## Installation and Running the Application
 
