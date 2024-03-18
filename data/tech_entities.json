@@ -13,7 +13,11 @@
         "type": "RDBMS",
         "category": "Database",
         "description": "A powerful, open-source relational database management system, renowned for its performance, stability, and feature set.",
-        "patterns": [[{ "LOWER": { "FUZZY1": "postgresql" } }]],
+        "patterns": [
+            [{ "LOWER": { "FUZZY1": "postgresql" } }],
+            [{ "LOWER": {"FUZZY1": "postgre"} }],
+            [{ "LOWER": "postgre" }, { "LOWER": "sql" }]
+        ],
         "score": 9
     },
     "SQLite": {
@@ -103,16 +107,6 @@
         "category": "Backend",
         "description": "A versatile, dynamically-typed programming language suitable for web development, scientific computing, artificial intelligence, and data science.",
         "patterns": [[{ "LOWER": { "FUZZY1": "python" } }]],
-        "score": 7.5
-    },
-    "JavaScript": {
-        "type": "Programming Language",
-        "category": "Frontend",
-        "description": "A ubiquitous, dynamically-typed programming language executed by web browsers, facilitating interactive and engaging web experiences.",
-        "patterns": [
-            [{ "LOWER": { "FUZZY1": "javascript" } }],
-            [{ "LOWER": "js" }]
-        ],
         "score": 7.5
     },
     "Java": {
@@ -439,6 +433,13 @@
         ],
         "score": 10
     },
+    "Helm": {
+        "type": "DevOps",
+        "category": "Kubernetes Package Manager",
+        "description": "Helm is a package manager for Kubernetes that allows you to define, install, and upgrade even the most complex Kubernetes applications.",
+        "patterns": [[{ "LOWER": { "FUZZY1": "helm" } }]],
+        "score": 9
+    },
 
     "GraphQL": {
         "type": "Query Language",
@@ -595,7 +596,7 @@
     "CI/CD": {
         "type": "DevOps Practices",
         "category": "Requirement",
-        "relatedTechnologies": ["GitHub Actions", "Jenkins"],
+        "relatedTechnologies": ["GitHub Actions","Docker", "Kubernetes"],
         "patterns": [
             [
                 { "LOWER": "continuous" },
@@ -606,7 +607,10 @@
             [{ "ORTH": "CI" }, { "ORTH": "/" }, { "ORTH": "CD" }],
             [{ "ORTH": "CI/CD" }],
             [{ "LOWER": "ci" }, { "ORTH": "/" }, { "LOWER": "cd" }],
-            [{ "LOWER": { "FUZZY1": "cicd" } }]
+            [{ "LOWER": { "FUZZY1": "cicd" } }],
+            [{ "LOWER": { "FUZZY1": "workflow" } }, { "LOWER": { "FUZZY1": "automation" } }],
+            [{ "LOWER": { "FUZZY1": "workflow" } }],
+            [{ "LOWER": { "FUZZY1": "deployment" } }]
         ],
         "description": "Continuous Integration and Continuous Deployment (CI/CD) are DevOps practices that automate the software release process. CI focuses on integrating code changes frequently, whereas CD ensures the delivery of these changes to production environments smoothly.",
         "score": 5

@@ -10,7 +10,9 @@ from src.nlp.service import (
     dynamic_score_entities,
     extract_tech_entities,
     initialize_matcher_with_patterns,
+    load_blueprints_corpus,
     load_tech_entities,
+    match_blueprints,
     recommend_technologies,
 )
 
@@ -34,18 +36,26 @@ async def process_texts(
     ),  # Add dependency to access the app instance
 ):
     """
-    Process a list of input texts and return recommendations based on extracted entities and predicted topics.
+    Process a list of input texts by extracting technology entities, classifying them into topics,
+    scoring the entities based on relevance, generating recommendations, matching blueprints,
+    and returning the results.
 
     Args:
-      input_text (InputText): Input text data.
-      jwt_data (JWTData, optional): JWT data. Defaults to Depends(parse_jwt_user_data).
+        input_text (InputText): The input texts to process.
+        jwt_data (JWTData, optional): The JWT data. Defaults to Depends(parse_jwt_user_data).
+        app (FastAPI, optional): The FastAPI application instance. Defaults to Depends(get_application).
 
     Returns:
-      List[Recommendation]: List of recommendations for each input text.
+        List[Dict]: A list of dictionaries containing the processed results for each input text.
     """
     tech_entities = (
         await load_tech_entities()
     )  # Load technology entities from a JSON file
+    
+    blueprint_corpus = (
+        await load_blueprints_corpus()
+    ) # Load blueprint corpus from a JSON file
+    
     matcher = initialize_matcher_with_patterns(
         tech_entities
     )  # Initialize a spaCy Matcher object with patterns for tech entities
@@ -81,18 +91,37 @@ async def process_texts(
         sorted_entities = dynamic_score_entities(
             extracted_entities, topic_keywords, text, tech_entities
         )  # Score the entities based on their relevance to the text and topic keywords
-        recommendations = recommend_technologies(
-            sorted_entities
-        )  # Recommend technologies based on the highest-scoring entity for each category
+        # After generating recommendations
+        recommendations = recommend_technologies(sorted_entities)
 
-        # Append the results to the list
-        results.append(
-            {
-                "input_text": text,
-                "predicted_topic_name": topic_name,
-                "extracted_entities": sorted_entities,
-                "recommendations": recommendations,
-            }
-        )
+        # Now, prepare the data structure expected by match_blueprints
+        nlp_output_for_matching = [{
+            "input_text": text,
+            "predicted_topic_name": topic_name,
+            "extracted_entities": sorted_entities,
+            "recommendations": recommendations  # Use the finalized recommendations
+        }]
+        
+        # Call match_blueprints with the finalized NLP output
+        matched_blueprints_dict = match_blueprints(nlp_output_for_matching, blueprint_corpus)
 
-    return results  # Return the list of results
+        # Assuming matched_blueprints_dict is obtained
+        # Flatten the matched blueprints into a list
+        matched_blueprints_list = []
+        for category, blueprints in matched_blueprints_dict.items():
+            for blueprint in blueprints:
+                # Optionally, you could add the 'category' to the blueprint dict if needed
+                # blueprint['category'] = category
+                matched_blueprints_list.append(blueprint)
+
+        # Append the results to the list, including matched blueprints
+        results.append({
+            "input_text": text,
+            "predicted_topic_name": topic_name,
+            "extracted_entities": sorted_entities,
+            "recommendations": recommendations,
+            "matched_blueprints": matched_blueprints_list  # This now matches the expected schema
+        })
+
+        # After processing all input texts
+        return results

@@ -20,3 +20,5 @@ class Recommendation(BaseModel):
     predicted_topic_name: str
     extracted_entities: List[Dict]
     recommendations: List[Dict]
+    matched_blueprints : List[Dict]
+

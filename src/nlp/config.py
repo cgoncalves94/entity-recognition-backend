@@ -8,6 +8,7 @@ class NlpConfig(BaseSettings):
 
     MODEL_NAME: str
     CORPUS_DIR: str
+    BLUEPRINTS_DIR: str
 
 
 nlp_config = NlpConfig()

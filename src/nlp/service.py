@@ -1,5 +1,7 @@
 import spacy
 import torch
+import torch.nn.functional as F
+
 from bertopic import BERTopic
 from scipy.spatial.distance import cosine
 from spacy.matcher import Matcher
@@ -26,6 +28,16 @@ def load_tech_entities():
 
     return load_json_file(tech_entities)
 
+def load_blueprints_corpus():
+    """
+    Load the blueprints corpus from a JSON file.
+    """
+
+    # Load the blueprints corpus from the JSON file
+    blueprints_corpus = nlp_config.BLUEPRINTS_DIR
+
+    return load_json_file(blueprints_corpus)
+
 
 def initialize_matcher_with_patterns(tech_entities):
     """
@@ -46,6 +58,23 @@ def initialize_matcher_with_patterns(tech_entities):
     # Return the matcher with all the added patterns
     return matcher
 
+def mean_pooling(model_output, attention_mask):
+    """
+    Apply mean pooling to get the sentence embedding
+    
+    Parameters:
+        model_output: The model's output.
+        attention_mask: The attention mask to exclude padding tokens from the averaging process.
+        
+    Returns:
+        torch.Tensor: The sentence embedding.
+    """
+    token_embeddings = model_output[0]  # First element of model_output contains all token embeddings
+    input_mask_expanded = attention_mask.unsqueeze(-1).expand(token_embeddings.size()).float()
+    sum_embeddings = torch.sum(token_embeddings * input_mask_expanded, 1)
+    sum_mask = torch.clamp(input_mask_expanded.sum(1), min=1e-9)
+    return sum_embeddings / sum_mask
+
 
 def get_embedding(text):
     """
@@ -65,9 +94,13 @@ def get_embedding(text):
     with torch.no_grad():  # Disable gradient computation
         outputs = model(**inputs)
     # Extract the embeddings from the model's output, which is the mean of the last hidden state
-    embeddings = outputs.last_hidden_state.mean(1)
+    embeddings = mean_pooling(outputs, inputs['attention_mask'])
+    
+    # Normalize the embeddings
+    normalized_embeddings = F.normalize(embeddings, p=2, dim=1)
+    
     # Return the embeddings after removing the batch dimension
-    return embeddings.squeeze()
+    return normalized_embeddings.squeeze()
 
 
 def cosine_similarity(a, b):
@@ -127,7 +160,13 @@ def extract_tech_entities(text, tech_entities, matcher):
 
 async def load_bertopic_model(model_object_name):
     """
-    Load a BERTopic model directly from Google Cloud Storage into memory without saving it locally.
+    Load a BERTopic model from a given object name.
+
+    Parameters:
+        model_object_name (str): The name of the model object to load.
+
+    Returns:
+        BERTopic: The loaded BERTopic model.
     """
 
     topic_model = BERTopic.load(model_object_name)
@@ -283,3 +322,59 @@ def recommend_technologies(entities):
     ]
 
     return recommendations
+
+def match_blueprints(nlp_output, blueprints_corpus):
+    """
+    Matches the extracted entities and recommendations from NLP output with the blueprints in the blueprints_corpus.
+    
+    Args:
+        nlp_output (list): List of dictionaries containing NLP output, including recommendations and extracted entities.
+        blueprints_corpus (list): List of dictionaries representing the blueprints corpus.
+    
+    Returns:
+        dict: A dictionary containing the matched blueprints categorized by type, with details such as name, path, description, and matched tags.
+    """
+    matched_blueprints = {}
+    recommendations = set(rec["recommendation"] for rec in nlp_output[0]["recommendations"])
+    extracted_entities = set(entity["entity_name"] for entity in nlp_output[0]["extracted_entities"])
+    all_matching_criteria = recommendations.union(extracted_entities)
+
+    # Function to calculate match score based on blueprint tags
+    def calculate_match_score(blueprint_tags):
+        return len(blueprint_tags.intersection(all_matching_criteria))
+
+    # Function to find the best match within a category or among nested blueprints
+    def find_best_match(blueprints):
+        best_match = None
+        highest_score = 0
+        for blueprint in blueprints:
+            match_score = calculate_match_score(set(blueprint["tags"]))
+            # Ensure all blueprint tags are covered by the matching criteria
+            if match_score == len(blueprint["tags"]) and match_score > highest_score:
+                best_match = blueprint
+                highest_score = match_score
+        return best_match
+
+    for category in blueprints_corpus:
+        # If the category has nested blueprints, evaluate those
+        if "blueprints" in category:
+            best_match = find_best_match(category["blueprints"])
+            if best_match:
+                matched_blueprints.setdefault(category["type"], []).append({
+                    "name": best_match["name"],
+                    "path": best_match["path"],
+                    "description": best_match["description"],
+                    "matched_tags": best_match["tags"]
+                })
+        else:
+            # If it's a standalone blueprint, evaluate it directly
+            best_match = find_best_match([category])
+            if best_match:
+                matched_blueprints.setdefault(category["type"], []).append({
+                    "name": best_match["name"],
+                    "path": best_match["path"],
+                    "description": best_match["description"],
+                    "matched_tags": best_match["tags"]
+                })
+
+    return matched_blueprints
