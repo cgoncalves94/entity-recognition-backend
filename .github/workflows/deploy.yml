@@ -14,35 +14,29 @@ jobs:
   deploy:
     name: Deploy app
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v2
-
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
-
       - name: Cache Docker layers
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: /tmp/.buildx-cache
           key: ${{ runner.os }}-buildx-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-buildx-
-
       - name: Login to Fly.io
-        uses: superfly/flyctl-actions/setup-flyctl@master
+        uses: superfly/flyctl-actions/setup-flyctl@v1
         with:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
-
       - name: Deploy to Fly.io
         run: |
           flyctl deploy --dockerfile ./Dockerfile --remote-only -a tech-entity-recognition \
-            --build-arg BUILDKIT_INLINE_CACHE=1
+          --build-arg BUILDKIT_INLINE_CACHE=1
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
-
       - name: Save Docker layers cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: /tmp/.buildx-cache
           key: ${{ runner.os }}-buildx-${{ github.sha }}
