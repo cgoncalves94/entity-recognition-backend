@@ -9,8 +9,8 @@ from src.auth.router import router as auth_router
 from src.config import app_configs, settings
 from src.database import Database
 from src.nlp.config import nlp_config
+from src.nlp.models import load_bertopic_model, load_embeddings_model
 from src.nlp.router import router as nlp_router
-from src.nlp.service import load_bertopic_model
 
 
 # Define an async context manager for the lifespan of the FastAPI application
@@ -37,6 +37,11 @@ async def lifespan(app: FastAPI) -> AsyncGenerator:
         model_object_name = nlp_config.MODEL_NAME
         app.state.bertopic_model = await load_bertopic_model(model_object_name)
         print("BERTopic model loaded successfully. ")
+
+        # Load transformers model and assign it to the application state
+        app.state.tokenizer, app.state.model = await load_embeddings_model()
+        print("Embeddings model loaded successfully.")
+
         yield
 
     except Exception as e:

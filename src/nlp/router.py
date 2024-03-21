@@ -5,16 +5,14 @@ from fastapi import APIRouter, Depends, FastAPI
 from src.auth.jwt import parse_jwt_user_data
 from src.auth.schemas import JWTData
 from src.nlp.schemas import InputText, Recommendation
-from src.nlp.service import (
-    classify_text,
-    dynamic_score_entities,
+from src.nlp.services.blueprint_matching import load_blueprints_corpus, match_blueprints
+from src.nlp.services.entity_extraction import (
     extract_tech_entities,
     initialize_matcher_with_patterns,
-    load_blueprints_corpus,
     load_tech_entities,
-    match_blueprints,
-    recommend_technologies,
 )
+from src.nlp.services.recommendation_generation import dynamic_score_entities, recommend_technologies
+from src.nlp.services.topic_classification import classify_text
 
 router = APIRouter()
 
@@ -51,11 +49,11 @@ async def process_texts(
     tech_entities = (
         await load_tech_entities()
     )  # Load technology entities from a JSON file
-    
+
     blueprint_corpus = (
         await load_blueprints_corpus()
     ) # Load blueprint corpus from a JSON file
-    
+
     matcher = initialize_matcher_with_patterns(
         tech_entities
     )  # Initialize a spaCy Matcher object with patterns for tech entities
@@ -101,7 +99,7 @@ async def process_texts(
             "extracted_entities": sorted_entities,
             "recommendations": recommendations  # Use the finalized recommendations
         }]
-        
+
         # Call match_blueprints with the finalized NLP output
         matched_blueprints_dict = match_blueprints(nlp_output_for_matching, blueprint_corpus)
 
