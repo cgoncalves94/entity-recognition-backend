@@ -5,9 +5,9 @@ on:
     branches:
       - main
     paths:
-      - 'src/**'  
+      - 'src/**'
       - 'Dockerfile'
-      - 'requirements/**'  
+      - 'requirements/**'
       - 'tests/**'
   workflow_dispatch:
 
@@ -47,5 +47,9 @@ jobs:
           pip install --no-cache-dir -r requirements/dev.txt -t /tmp/dependencies
         fi
         
+        # Copy dependencies to Docker build context
+        mkdir -p /tmp/build_context
+        cp -r /tmp/dependencies /tmp/build_context/dependencies
+        
         # Build and deploy the Docker image
-        flyctl deploy --dockerfile ./Dockerfile -a tech-entity-recognition --mount=type=cache,target=/tmp/dependencies
+        flyctl deploy --dockerfile ./Dockerfile -a tech-entity-recognition --remote-only
