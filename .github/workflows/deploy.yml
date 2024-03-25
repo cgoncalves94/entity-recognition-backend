@@ -5,8 +5,9 @@ on:
     branches:
       - main
     paths:
-      - 'src/**'
+      - 'src/**'  
       - 'Dockerfile'
+      - 'requirements/**'  
       - 'tests/**'
   workflow_dispatch:
 
@@ -22,22 +23,29 @@ jobs:
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v2
       
-    - name: Create cache directory
-      run: mkdir -p ${{ github.workspace }}/.buildx-cache
-        
-    - name: Cache Docker layers
+    - name: Cache dependencies
       uses: actions/cache@v3
       with:
-        path: ${{ github.workspace }}/.buildx-cache
-        key: ${{ runner.os }}-buildx-${{ hashFiles('**/Dockerfile', '**/*.go', '**/*.py') }}
+        path: /tmp/dependencies
+        key: ${{ runner.os }}-dependencies-${{ hashFiles('requirements/**') }}
         restore-keys: |
-          ${{ runner.os }}-buildx-
+          ${{ runner.os }}-dependencies-
           
-    - name: Deploy to Fly.io
+    - name: Build and Push Docker Image
       env:
         FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
       run: |
         curl -L https://fly.io/install.sh | sh
         export FLYCTL_INSTALL="/home/runner/.fly"
         export PATH="$FLYCTL_INSTALL/bin:$PATH"
-        flyctl deploy --dockerfile ./Dockerfile --remote-only -a tech-entity-recognition --build-arg BUILDKIT_INLINE_CACHE=1
+        flyctl auth token $FLY_API_TOKEN
+        
+        # Install dependencies (if cache missed)
+        if [ ! -d "/tmp/dependencies" ]; then
+          apt-get update && apt-get install -y gcc libpq-dev && apt clean && rm -rf /var/cache/apt/*
+          pip install -U pip
+          pip install --no-cache-dir -r requirements/dev.txt -t /tmp/dependencies
+        fi
+        
+        # Build and deploy the Docker image
+        flyctl deploy --dockerfile ./Dockerfile -a tech-entity-recognition --mount=type=cache,target=/tmp/dependencies
