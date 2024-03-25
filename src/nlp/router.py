@@ -1,10 +1,10 @@
 from typing import List
 
-from fastapi import APIRouter, Depends, FastAPI
+from fastapi import APIRouter, Body, Depends, FastAPI
 
 from src.auth.jwt import parse_jwt_user_data
 from src.auth.schemas import JWTData
-from src.nlp.schemas import InputText, Recommendation
+from src.nlp.schemas import BlueprintMatch, InputText, Recommendation
 from src.nlp.services.blueprint_matching import load_blueprints_corpus, match_blueprints
 from src.nlp.services.entity_extraction import (
     extract_tech_entities,
@@ -92,34 +92,39 @@ async def process_texts(
         # After generating recommendations
         recommendations = recommend_technologies(sorted_entities)
 
-        # Now, prepare the data structure expected by match_blueprints
-        nlp_output_for_matching = [{
-            "input_text": text,
-            "predicted_topic_name": topic_name,
-            "extracted_entities": sorted_entities,
-            "recommendations": recommendations  # Use the finalized recommendations
-        }]
-
-        # Call match_blueprints with the finalized NLP output
-        matched_blueprints_dict = match_blueprints(nlp_output_for_matching, blueprint_corpus)
-
-        # Assuming matched_blueprints_dict is obtained
-        # Flatten the matched blueprints into a list
-        matched_blueprints_list = []
-        for category, blueprints in matched_blueprints_dict.items():
-            for blueprint in blueprints:
-                # Optionally, you could add the 'category' to the blueprint dict if needed
-                # blueprint['category'] = category
-                matched_blueprints_list.append(blueprint)
-
-        # Append the results to the list, including matched blueprints
+        # Append the processed results to the list
         results.append({
             "input_text": text,
             "predicted_topic_name": topic_name,
             "extracted_entities": sorted_entities,
-            "recommendations": recommendations,
-            "matched_blueprints": matched_blueprints_list  # This now matches the expected schema
+            "recommendations": recommendations
         })
 
-        # After processing all input texts
-        return results
+    # After processing all input texts
+    return results
+
+# Define a route to match recommendations with blueprints
+@router.post("/match-blueprints/", response_model=List[BlueprintMatch])
+async def match_blueprint_endpoint(recommendations: List[Recommendation], jwt_data: JWTData = Depends(parse_jwt_user_data)):
+  """
+  Endpoint for matching recommendations with blueprints.
+
+  Args:
+    recommendations (List[Recommendation]): List of recommendations to be matched.
+    jwt_data (JWTData, optional): JWT data. Defaults to Depends(parse_jwt_user_data).
+
+  Returns:
+    List[BlueprintMatch]: List of matched blueprints.
+  """
+  blueprints_corpus = await load_blueprints_corpus()
+  all_matched_blueprints = []
+
+  for recommendation in recommendations:
+    matched_blueprints = match_blueprints([recommendation.dict()], blueprints_corpus)
+
+    # Construct BlueprintMatch correctly with the list of matched blueprints
+    matched_blueprint_object = BlueprintMatch(matched_blueprints=[bp for _, bps in matched_blueprints.items() for bp in bps])
+    
+    all_matched_blueprints.append(matched_blueprint_object)
+
+  return all_matched_blueprints

@@ -20,5 +20,12 @@ class Recommendation(BaseModel):
     predicted_topic_name: str
     extracted_entities: List[Dict]
     recommendations: List[Dict]
+
+    
+class BlueprintMatch(BaseModel):
+    """
+    Represents the blueprint match for the input text.
+    """
+    
     matched_blueprints : List[Dict]
 
