@@ -32,16 +32,13 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-buildx-
 
-      - name: Replace placeholders in pytest.ini
+      - name: Build Docker containers
+        run: docker compose build
+
+      - name: Run Tests
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
-        run: |
-          sed -i "s@\${DATABASE_URL}@$DATABASE_URL@g" pytest.ini
-
-      - name: Run tests
-        run: |
-          docker compose build
-          docker compose run app pytest
+        run: docker compose run app pytest
 
       - name: Deploy to Fly.io
         if: success()
