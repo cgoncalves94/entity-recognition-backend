@@ -1,5 +1,5 @@
 [tool.ruff]
-line-length = 145
+line-length = 160
 
 # Enable Pyflakes `E` and `F` codes by default.
 lint.select = [
