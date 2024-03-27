@@ -16,42 +16,30 @@ from src.nlp.router import router as nlp_router
 # Define an async context manager for the lifespan of the FastAPI application
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator:
-    """
-    Context manager for managing the lifespan of the application.
-
-    Args:
-      app (FastAPI): The FastAPI application instance.
-
-    Yields:
-      None
-
-    Raises:
-      Exception: If there is an error connecting to the database.
-
-    """
     try:
         # Startup
         await Database.connect(settings.DATABASE_URL, settings.DATABASE_NAME)
-
-        # Load BERTopic model and assign it to the application state
         model_object_name = nlp_config.MODEL_NAME
         app.state.bertopic_model = await load_bertopic_model(model_object_name)
         print("BERTopic model loaded successfully. ")
-
-        # Load transformers model and assign it to the application state
         app.state.tokenizer, app.state.model = await load_embeddings_model()
         print("Embeddings model loaded successfully.")
-
         yield
-
     except Exception as e:
-        print(f"Failed to connect to the database: {e}")
+        print(f"Failed to start the application: {e}")
         import traceback
 
-        traceback.print_exc()  # Print the full traceback
+        traceback.print_exc()
     finally:
         # Shutdown
-        Database.close()
+        try:
+            Database.close()
+            print("Database connection closed.")
+        except Exception as e:
+            print(f"Failed to close the database connection: {e}")
+            import traceback
+
+            traceback.print_exc()
 
 
 # Create a FastAPI application instance with the specified configurations and lifespan

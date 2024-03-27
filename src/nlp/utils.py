@@ -11,7 +11,9 @@ from scipy.spatial.distance import cosine
 # Function to access the global FastAPI application instance
 def get_application() -> FastAPI:
     from src.main import app
+
     return app
+
 
 async def load_json_file(file_path):
     # Detailed explanation of the function's purpose
@@ -71,14 +73,12 @@ def get_embedding(text):
     model = app.state.model
 
     # Tokenize the input text and prepare it for the model
-    inputs = tokenizer(
-        text, return_tensors="pt", padding=True, truncation=True, max_length=512
-    )
+    inputs = tokenizer(text, return_tensors="pt", padding=True, truncation=True, max_length=512)
     # Generate the embeddings by passing the inputs to the model
     with torch.no_grad():  # Disable gradient computation
         outputs = model(**inputs)
     # Extract the embeddings from the model's output, which is the mean of the last hidden state
-    embeddings = mean_pooling(outputs, inputs['attention_mask'])
+    embeddings = mean_pooling(outputs, inputs["attention_mask"])
 
     # Normalize the embeddings
     normalized_embeddings = F.normalize(embeddings, p=2, dim=1)

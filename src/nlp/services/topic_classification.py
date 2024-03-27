@@ -1,5 +1,3 @@
-
-
 def classify_text(text, topic_model, topic_name_mapping):
     """
     Classifies the given text into a topic using the provided topic model.

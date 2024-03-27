@@ -40,9 +40,7 @@ class Config(BaseSettings):
         Raises:
           ValueError: If the database URL is invalid.
         """
-        if not value.startswith("mongodb://") and not value.startswith(
-            "mongodb+srv://"
-        ):
+        if not value.startswith("mongodb://") and not value.startswith("mongodb+srv://"):
             raise ValueError("Invalid MongoDB URL")
         return value
 

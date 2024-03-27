@@ -647,7 +647,6 @@
         "patterns": [
             [{ "LOWER": { "FUZZY1": "container" } }, { "LOWER": { "FUZZY1": "orchestration" } }],
             [{ "LOWER": { "FUZZY1": "pods" }}],
-            [{ "LOWER": { "FUZZY1": "nodes" }}],
             [{ "LOWER": { "FUZZY1": "scalable" }}]
         ],
         "description": "The process of automating the deployment, scaling, and management of containerized applications.",

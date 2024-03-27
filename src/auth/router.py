@@ -95,9 +95,7 @@ async def refresh_tokens(
     Returns:
     - An AccessTokenResponse object containing the new access and refresh tokens.
     """
-    refresh_token_value = await service.create_refresh_token(
-        user_id=refresh_token["user_id"]
-    )
+    refresh_token_value = await service.create_refresh_token(user_id=refresh_token["user_id"])
     response.set_cookie(**utils.get_refresh_token_settings(refresh_token_value))
 
     worker.add_task(service.expire_refresh_token, refresh_token["uuid"])
@@ -121,6 +119,4 @@ async def logout_user(
     """
     await service.expire_refresh_token(refresh_token["uuid"])
 
-    response.delete_cookie(
-        **utils.get_refresh_token_settings(refresh_token["refresh_token"], expired=True)
-    )
+    response.delete_cookie(**utils.get_refresh_token_settings(refresh_token["refresh_token"], expired=True))

@@ -33,11 +33,7 @@ class CustomModel(BaseModel):
         """
         Set the microseconds of datetime fields to 0 in the given data dictionary.
         """
-        datetime_fields = {
-            k: v.replace(microsecond=0)
-            for k, v in data.items()
-            if isinstance(v, datetime)
-        }
+        datetime_fields = {k: v.replace(microsecond=0) for k, v in data.items() if isinstance(v, datetime)}
 
         return {**data, **datetime_fields}
 

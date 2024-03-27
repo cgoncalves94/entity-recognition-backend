@@ -23,13 +23,13 @@ default_web_concurrency = workers_per_core * multiprocessing.cpu_count() + 1
 # Get the web concurrency from the environment variable, if not set, use the default web concurrency
 web_concurrency_str = os.getenv("WEB_CONCURRENCY", None)
 if web_concurrency_str:
-  web_concurrency = int(web_concurrency_str)
-  assert web_concurrency > 0
+    web_concurrency = int(web_concurrency_str)
+    assert web_concurrency > 0
 else:
-  web_concurrency = max(int(default_web_concurrency), 2)
-  if max_workers_str:
-    use_max_workers = int(max_workers_str)
-    web_concurrency = min(web_concurrency, use_max_workers)
+    web_concurrency = max(int(default_web_concurrency), 2)
+    if max_workers_str:
+        use_max_workers = int(max_workers_str)
+        web_concurrency = min(web_concurrency, use_max_workers)
 
 # Get the graceful timeout, timeout, and keep alive values from environment variables, default to 120, 120, and 5 respectively
 graceful_timeout_str = os.getenv("GRACEFUL_TIMEOUT", "120")

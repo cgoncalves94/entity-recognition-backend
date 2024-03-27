@@ -21,11 +21,7 @@ def dynamic_score_entities(entities, topic_keywords, user_input, tech_entities):
     scores = {}
 
     # Identify explicit mentions of entities in the user input.
-    explicit_mentions = [
-        entity_dict["entity"]
-        for entity_dict in entities
-        if entity_dict["entity"].lower() in user_input.lower()
-    ]
+    explicit_mentions = [entity_dict["entity"] for entity_dict in entities if entity_dict["entity"].lower() in user_input.lower()]
 
     # Prepare a list of entities to be scored. If an entity has related technologies,
     # add those to the list instead of the entity itself.
@@ -49,10 +45,7 @@ def dynamic_score_entities(entities, topic_keywords, user_input, tech_entities):
         # Calculate the cosine similarity between the user input and the entity.
         similarity = cosine_similarity(input_embedding, entity_embedding)
         # Calculate the relevance score of the entity based on its similarity to the topic keywords.
-        relevance_score = sum(
-            cosine_similarity(get_embedding(keyword), entity_embedding)
-            for keyword in topic_keywords
-        ) / len(topic_keywords)
+        relevance_score = sum(cosine_similarity(get_embedding(keyword), entity_embedding) for keyword in topic_keywords) / len(topic_keywords)
 
         # The combined score is the sum of the similarity and the relevance score.
         combined_score = similarity + relevance_score
@@ -75,14 +68,9 @@ def dynamic_score_entities(entities, topic_keywords, user_input, tech_entities):
         # Get the maximum score in the category.
         max_score = max(entities_scores.values(), default=1)
         # Normalize the scores by dividing each score by the maximum score.
-        normalized_scores = {
-            entity_name: score / max_score
-            for entity_name, score in entities_scores.items()
-        }
+        normalized_scores = {entity_name: score / max_score for entity_name, score in entities_scores.items()}
         # Sort the entities by their normalized scores in descending order.
-        sorted_entities = sorted(
-            normalized_scores.items(), key=lambda x: x[1], reverse=True
-        )
+        sorted_entities = sorted(normalized_scores.items(), key=lambda x: x[1], reverse=True)
         # Add the sorted entities to the sorted_entities_by_category dictionary.
         sorted_entities_by_category[category] = sorted_entities
 
@@ -109,16 +97,10 @@ def recommend_technologies(entities):
     # Iterate through entities to find the highest-scoring entity for each category
     for entity in entities:
         category = entity["category"]
-        if (
-            category not in best_entity_per_category
-            or best_entity_per_category[category]["score"] < entity["score"]
-        ):
+        if category not in best_entity_per_category or best_entity_per_category[category]["score"] < entity["score"]:
             best_entity_per_category[category] = entity
 
     # Prepare recommendations based on the best entity for each category
-    recommendations = [
-        {"category": category, "recommendation": entity["entity_name"]}
-        for category, entity in best_entity_per_category.items()
-    ]
+    recommendations = [{"category": category, "recommendation": entity["entity_name"]} for category, entity in best_entity_per_category.items()]
 
     return recommendations

@@ -5,9 +5,7 @@ from pydantic import EmailStr, Field, field_validator
 from src.models import CustomModel
 
 # Regular expression pattern for a strong password
-STRONG_PASSWORD_PATTERN = re.compile(
-    r"^(?=.*[\d])(?=.*[A-Z])(?=.*[!@#$%^&*])[\w!@#$%^&*]{6,128}$"
-)
+STRONG_PASSWORD_PATTERN = re.compile(r"^(?=.*[\d])(?=.*[A-Z])(?=.*[!@#$%^&*])[\w!@#$%^&*]{6,128}$")
 
 
 # Represents the schema for an authenticated user
@@ -20,13 +18,7 @@ class AuthUser(CustomModel):
     @classmethod
     def valid_password(cls, password: str) -> str:
         if not re.match(STRONG_PASSWORD_PATTERN, password):
-            raise ValueError(
-                "Password must contain at least "
-                "one lowercase character, "
-                "one uppercase character, "
-                "one digit, "
-                "and one special symbol"
-            )
+            raise ValueError("Password must contain at least " "one lowercase character, " "one uppercase character, " "one digit, " "and one special symbol")
         return password
 
 

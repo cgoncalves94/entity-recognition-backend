@@ -21,11 +21,10 @@ class Recommendation(BaseModel):
     extracted_entities: List[Dict]
     recommendations: List[Dict]
 
-    
+
 class BlueprintMatch(BaseModel):
     """
     Represents the blueprint match for the input text.
     """
-    
-    matched_blueprints : List[Dict]
 
+    matched_blueprints: List[Dict]

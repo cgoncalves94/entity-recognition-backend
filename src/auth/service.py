@@ -90,8 +90,7 @@ async def create_refresh_token(*, user_id: str, refresh_token: str = None) -> st
     token_data = {
         "uuid": Binary(uuid.uuid4().bytes, subtype=UuidRepresentation.STANDARD),
         "refresh_token": refresh_token,
-        "expires_at": datetime.utcnow()
-        + timedelta(seconds=auth_config.REFRESH_TOKEN_EXP),
+        "expires_at": datetime.utcnow() + timedelta(seconds=auth_config.REFRESH_TOKEN_EXP),
         "user_id": user_id,
     }
     await Database.db["refresh_tokens"].insert_one(token_data)
@@ -108,9 +107,7 @@ async def get_refresh_token(refresh_token: str) -> Optional[dict[str, Any]]:
     Returns:
       The refresh token data if found, None otherwise.
     """
-    token = await Database.db["refresh_tokens"].find_one(
-        {"refresh_token": refresh_token}
-    )
+    token = await Database.db["refresh_tokens"].find_one({"refresh_token": refresh_token})
     return token
 
 
