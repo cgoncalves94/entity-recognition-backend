@@ -35,7 +35,8 @@ jobs:
       - name: Replace placeholders in pytest.ini
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
-        run: sed -i "s@\${DATABASE_URL}@$DATABASE_URL@g" pytest.ini
+        run: |
+          sed -i "s@\${DATABASE_URL}@$DATABASE_URL@g" pytest.ini
 
       - name: Run tests
         run: |
