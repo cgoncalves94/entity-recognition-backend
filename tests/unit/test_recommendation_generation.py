@@ -10,7 +10,7 @@ from src.nlp.services.recommendation_generation import (
 @pytest.fixture
 async def tech_entities_fixture():
     """Async fixture to simulate or mock the expected output of load_tech_entities()."""
-    
+
     return {
         "MySQL": {"category": "Database", "patterns": [], "score": 1},
         "MongoDB": {"category": "Database", "patterns": [], "score": 0.9},
@@ -20,7 +20,7 @@ async def tech_entities_fixture():
 @pytest.mark.asyncio
 async def test_dynamic_score_entities(client: TestClient, tech_entities_fixture):
     """Test case for dynamic_score_entities function."""
-    
+
     entities = [
         {"entity": "MySQL", "category": "Database"},
         {"entity": "MongoDB", "category": "Database"},
@@ -35,7 +35,7 @@ async def test_dynamic_score_entities(client: TestClient, tech_entities_fixture)
 
 def test_recommend_technologies():
     """Test case for recommend_technologies function."""
-    
+
     entities = [
         {"entity_name": "React", "score": 0.9, "category": "Frontend"},
         {"entity_name": "NodeJS", "score": 0.8, "category": "Backend"},

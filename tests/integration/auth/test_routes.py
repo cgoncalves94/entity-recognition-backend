@@ -9,7 +9,7 @@ from src.auth.dependencies import service
 @pytest.mark.asyncio
 async def test_register(client: TestClient):
     """Tests user registration."""
-    
+
     resp = await client.post(
         "/auth/users",
         json={
@@ -26,7 +26,7 @@ async def test_register(client: TestClient):
 @pytest.mark.asyncio
 async def test_login_endpoint(client: TestClient, user_cleanup) -> None:
     """Tests user login and token generation."""
-    
+
     # Set up user data (replace with your actual user creation logic)
     user_email = "test_user@example.com"
     user_password = "123Aa!"
@@ -42,11 +42,11 @@ async def test_login_endpoint(client: TestClient, user_cleanup) -> None:
 
     assert response.status_code == status.HTTP_200_OK
 
-    
+
 @pytest.mark.asyncio
 async def test_register_email_taken(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
     """Tests user registration when the email is already taken."""
-    
+
     async def fake_getter(*args, **kwargs):
         """Fake getter function to simulate a user already existing in the database."""
         return True
@@ -66,4 +66,3 @@ async def test_register_email_taken(client: TestClient, monkeypatch: pytest.Monk
 
     assert resp.status_code == status.HTTP_400_BAD_REQUEST
     assert resp_json["detail"] == ErrorCode.EMAIL_TAKEN
-    

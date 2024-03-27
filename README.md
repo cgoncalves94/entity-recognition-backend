@@ -49,7 +49,14 @@ The project is structured as follows:
     - `utils.py`: Contains utility functions used across the NLP services.
   - `main.py`: The main script that runs the application.
 - `data/`: This directory contains data files like `tech_entities.json` and `blueprints_metadata.json`, which contain patterns, information, and metadata about different technology-related entities and blueprints.
-- `tests/`: Contains automated tests for the application, ensuring reliability and functionality. This includes tests for authentication routes and other critical functionalities.
+- `tests/`: Contains automated tests for the application, ensuring reliability and functionality.
+  - `integration/`: Integration tests that test the application's components and their interactions.
+    - `auth/test_routes.py`: Tests for the authentication routes.
+    - `nlp/test_nlp_endpoints.py`: Tests for the NLP service endpoints.
+  - `unit/`: Unit tests that test individual functions and components in isolation.
+    - `test_entity_extraction.py`: Tests for the entity extraction functionality.
+    - `test_match_blueprints.py`: Tests for the blueprint matching functionality.
+    - `test_recommendation_generation.py`: Tests for the recommendation generation functionality.
 
 
 ## Running Tests

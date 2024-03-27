@@ -6,14 +6,14 @@ from src.nlp.services.blueprint_matching import load_blueprints_corpus, match_bl
 @pytest.fixture
 async def blueprints_corpus():
     """Async fixture to load the blueprints_corpus from the JSON file."""
-    
+
     return await load_blueprints_corpus()
 
 
 @pytest.fixture
 def nlp_output():
     """Fixture for the NLP output with extracted entities and recommendations."""
-    
+
     return [
         {
             "extracted_entities": [
@@ -33,7 +33,7 @@ def nlp_output():
 @pytest.mark.asyncio
 async def test_match_blueprints_single_recommendation(blueprints_corpus, nlp_output):
     """Tests that the match_blueprints() function correctly matches a single recommendation."""
-    
+
     matched_blueprints = match_blueprints(nlp_output, await blueprints_corpus)
 
     # Assert that the expected blueprint is matched
@@ -44,7 +44,7 @@ async def test_match_blueprints_single_recommendation(blueprints_corpus, nlp_out
 @pytest.mark.asyncio
 async def test_match_blueprints_multiple_recommendations(blueprints_corpus, nlp_output):
     """Tests that the match_blueprints() function correctly matches multiple recommendations."""
-    
+
     matched_blueprints = match_blueprints(nlp_output, await blueprints_corpus)
 
     # Flatten the matched blueprints for easier assertion
@@ -62,7 +62,7 @@ async def test_match_blueprints_multiple_recommendations(blueprints_corpus, nlp_
 @pytest.mark.asyncio
 async def test_match_blueprints_no_matching_blueprints(blueprints_corpus):
     """Tests that the match_blueprints() function correctly handles no matching blueprints."""
-    
+
     nlp_output = [
         {
             "recommendations": [{"recommendation": "Unknown Technology"}],
