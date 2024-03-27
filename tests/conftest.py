@@ -21,4 +21,4 @@ async def user_cleanup():
     # No setup needed before yielding
     yield
     # Cleanup: Delete the test user after the test runs
-    await delete_user_by_email("email@fake.com")
+    await delete_user_by_email("test_user@example.com")
