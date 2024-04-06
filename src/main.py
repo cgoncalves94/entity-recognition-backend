@@ -1,7 +1,6 @@
 from contextlib import asynccontextmanager
 from typing import AsyncGenerator
 
-import sentry_sdk
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 
@@ -42,6 +41,17 @@ async def lifespan(app: FastAPI) -> AsyncGenerator:
             traceback.print_exc()
 
 
+def setup_logging():
+    logging_format = "[%(filename)s:%(lineno)s - %(funcName)20s() ] %(message)s"
+    logging_level = (
+        logging.DEBUG if os.getenv("ENVIRONMENT") == "development" else logging.INFO
+    )
+    logging.basicConfig(format=logging_format, level=logging_level)
+
+
+setup_logging()
+logger = logging.getLogger(__name__)
+
 # Create a FastAPI application instance with the specified configurations and lifespan
 app = FastAPI(**app_configs, lifespan=lifespan)
 
@@ -54,13 +64,6 @@ app.add_middleware(
     allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allow_headers=settings.CORS_HEADERS,
 )
-
-# Initialize Sentry for error tracking if the application is deployed
-if settings.ENVIRONMENT.is_deployed:
-    sentry_sdk.init(
-        dsn=settings.SENTRY_DSN,
-        environment=settings.ENVIRONMENT.value,  # Ensure this correctly references the environment string
-    )
 
 
 # Define the root endpoint

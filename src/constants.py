@@ -6,17 +6,17 @@ class Environment(str, Enum):
     Enum class representing different environments.
     """
 
-    LOCAL = "LOCAL"
-    TESTING = "TESTING"
-    STAGING = "STAGING"
-    PRODUCTION = "PRODUCTION"
+    DEVELOPMENT = "development"
+    TESTING = "testing"
+    STAGING = "staging"
+    PRODUCTION = "production"
 
     @property
     def is_debug(self):
         """
         Check if the environment is a debug environment.
         """
-        return self in (self.LOCAL, self.STAGING, self.TESTING)
+        return self in (self.DEVELOPMENT, self.TESTING, self.STAGING)
 
     @property
     def is_testing(self):
