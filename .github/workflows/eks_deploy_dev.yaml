@@ -1,0 +1,63 @@
+name: "Eentity Dev Manual Deployment (ers-dev.warestack.com)"
+run-name: "(ers-dev.warestack.com) Manual Deployment"
+
+on: workflow_dispatch
+
+jobs:
+  deploy:
+    name: Setup, Build and Publish Docker image to ECR, and Deploy to EKS using Helm
+    runs-on: ubuntu-latest
+    env:
+      BRANCH: ${{ github.head_ref || github.ref_name }}
+      REGION: eu-west-2
+      EKS_CLUSTER: war-eks-cluster
+      NAMESPACE: dev
+      IMAGE_NAME: warestack_com_dev_ers
+      RELEASE_NAME: warestack-com-dev-ers
+      PUBLIC_URL: ers-dev.warestack.com
+      PORT: 8000
+      HELM_PATH: eks_deploy/helm
+      JOB_STATUS: succeeded
+
+    # Add "id-token" with the intended permissions.
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
+    steps:
+      # Checkout GitHub branch's config
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.BRANCH }}
+          fetch-depth: 0
+
+      # Configure AWS
+      - name: Configure AWS
+        id: configure_aws
+        uses: warestack/platform/ci-cd-and-automation/github/composite-actions/aws-configure@v1.0.0
+        with:
+          aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws_region: ${{ env.REGION }}
+          eks_cluster: ${{ env.EKS_CLUSTER }}
+
+      # Build and push image
+      - name: Build and push image
+        id: build_and_deploy
+        uses: warestack/platform/ci-cd-and-automation/github/composite-actions/docker-build-and-push@v1.0.0
+        with:
+          registry_url: ${{ steps.configure_aws.outputs.registry_url }}
+          image_name: ${{ env.IMAGE_NAME }}
+
+      # Install or upgrade Helm chart
+      - name: Install or upgrade Helm chart
+        uses: warestack/platform/ci-cd-and-automation/github/composite-actions/helm-install-local-chart@v1.0.0
+        with:
+          release_name: ${{ env.RELEASE_NAME }}
+          namespace: ${{ env.NAMESPACE }}
+          helm_path: ${{ env.HELM_PATH }}
+          image_uri: ${{ steps.build_and_deploy.outputs.image_uri }}
+          image_tag: ${{ steps.build_and_deploy.outputs.image_tag }}
+          public_url: ${{ env.PUBLIC_URL }}
+          port: ${{ env.PORT }}

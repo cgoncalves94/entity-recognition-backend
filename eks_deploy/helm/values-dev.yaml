@@ -1,0 +1,93 @@
+# Default values for the helm chart.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: 310938434179.dkr.ecr.eu-west-2.amazonaws.com/warestack_com_dev_ers
+  # get it from https://eu-west-2.console.aws.amazon.com/ecr/repositories?region=eu-west-2 or run:
+  # aws ecr describe-repositories --output=json | jq -r '.repositories[].repositoryUri'
+  pullPolicy: Always
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: latest
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: false
+  annotations: {}
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+
+securityContext: {}
+
+service:
+  type: NodePort
+  port: 3000
+
+cert:
+  enabled: true
+  tls:
+    secretName: ers-dev-tls
+  issuerRef:
+    name: war-cert-issuer
+    kind: ClusterIssuer
+  commonName: ers-dev.warestack.com
+  dnsNames:
+    hosts:
+      - ers-dev.warestack.com
+
+ingress:
+  enabled: true
+  className: "nginx"
+  hosts:
+    - host: ers-dev.warestack.com
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls:
+    - secretName: ers-dev-tls
+      hosts:
+        - ers-dev.warestack.com
+
+healthChecks:
+  path: /healthcheck
+
+resources:
+  limits:
+    cpu: 800m
+    memory: 2048Mi
+  requests:
+    cpu: 400m
+    memory: 512Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 1
+  targetCPUUtilizationPercentage: 100
+  targetMemoryUtilizationPercentage: 100
+
+tolerations: []
+
+# Environment variables to be injected as configuration files in containers / pods
+secrets:
+  ENVIRONMENT: staging
+  DATABASE_URL: mongodb+srv://
+  DATABASE_NAME: t***
+  JWT_SECRET: s***
+  JWT_ALG: HS256
+  JWT_EXP: 21000
+  SITE_DOMAIN: 127.0.0.1
+  SECURE_COOKIES: false
+  CORS_HEADERS: ["*"]
+  CORS_ORIGINS: ["http://localhost:3000","http://127.0.0.1:3000"]
+  MODEL_NAME: MaartenGr/BERTopic_Wikipedia
+  CORPUS_DIR: data/tech_entities.json
+  BLUEPRINTS_DIR: data/blueprints_metadata.json
