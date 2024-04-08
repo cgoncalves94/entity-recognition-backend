@@ -4,9 +4,9 @@ import os
 # based on https://github.com/tiangolo/uvicorn-gunicorn-fastapi-docker
 
 
-# Get the host and port from environment variables, default to "0.0.0.0" and "9000" respectively
+# Get the host and port from environment variables, default to "0.0.0.0" and "8000" respectively
 host = os.getenv("HOST", "0.0.0.0")
-port = os.getenv("PORT", "9000")
+port = os.getenv("PORT", "8000")
 
 # Get the bind address from the environment variable, if not set, use the host and port
 bind_env = os.getenv("BIND", None)
