@@ -1,7 +1,7 @@
-{
+  {
     "MySQL": {
         "type": "RDBMS",
-        "category": "Database",
+        "category": "Databases",
         "description": "A widely used open-source relational database management system, known for its speed, reliability, and ease of use.",
         "patterns": [
             [{ "LOWER": { "FUZZY1": "mysql" } }],
@@ -11,7 +11,7 @@
     },
     "PostgreSQL": {
         "type": "RDBMS",
-        "category": "Database",
+        "category": "Databases",
         "description": "A powerful, open-source relational database management system, renowned for its performance, stability, and feature set.",
         "patterns": [
             [{ "LOWER": { "FUZZY1": "postgresql" } }],
@@ -22,7 +22,7 @@
     },
     "SQLite": {
         "type": "Embedded Database",
-        "category": "Database",
+        "category": "Databases",
         "description": "A lightweight, file-based SQL database, ideal for low-footprint embedded devices and desktop applications.",
         "patterns": [
             [{ "LOWER": { "FUZZY1": "sqlite" } }],
@@ -32,7 +32,7 @@
     },
     "MariaDB": {
         "type": "RDBMS",
-        "category": "Database",
+        "category": "Databases",
         "description": "A community-developed, drop-in replacement for MySQL, offering improved performance, security, and compatibility.",
         "patterns": [
             [{ "LOWER": { "FUZZY1": "mariadb" } }],
@@ -43,7 +43,7 @@
     },
     "OracleDB": {
         "type": "RDBMS",
-        "category": "Database",
+        "category": "Databases",
         "description": "A proprietary enterprise-class relational database management system, recognized for its scalability, availability, and security.",
         "patterns": [
             [{ "LOWER": { "FUZZY1": "oracledb" } }],
@@ -54,25 +54,28 @@
     },
     "MongoDB": {
         "type": "NoSQL",
-        "category": "Database",
+        "category": "Databases",
         "description": "A cross-platform, document-oriented NoSQL database, designed for high performance, high availability, and easy scalability.",
         "patterns": [
             [{ "LOWER": { "FUZZY1": "mongodb" } }],
             [{ "LOWER": { "FUZZY1": "mongo" } }, { "LOWER": "db" }],
-            [{ "LOWER": { "FUZZY1": "mongo" } }, { "LOWER": "database" }]
+            [{ "LOWER": { "FUZZY1": "mongo" } }, { "LOWER": "database" }],
+            [{ "LOWER": { "FUZZY1": "mongoose" } }],
+            [{ "LOWER": { "FUZZY1": "mongo" } }]
+
         ],
         "score": 9
     },
     "Redis": {
         "type": "NoSQL",
-        "category": "Database",
+        "category": "Databases",
         "description": "An in-memory key-value data structure store, featuring exceptional performance, persistence capabilities, and support for replication and clustering.",
         "patterns": [[{ "LOWER": { "FUZZY1": "redis" } }]],
         "score": 8
     },
     "Apache Cassandra": {
         "type": "NoSQL",
-        "category": "Database",
+        "category": "Databases",
         "description": "Apache Cassandra is a free and open-source, distributed, wide column store, NoSQL database management system designed to handle large amounts of data across many commodity servers, providing high availability with no single point of failure.",
         "patterns": [
             [{ "LOWER": { "FUZZY1": "apache cassandra" } }],
@@ -89,14 +92,14 @@
     },
 
     "HTML": {
-        "type": "Frontend",
+        "type": "Markup Language",
         "category": "Web Development",
         "description": "The de facto standard markup language for structuring and presenting content on the World Wide Web, defining elements through tags and attributes.",
         "patterns": [[{ "LOWER": { "FUZZY1": "html" } }]],
         "score": 7.5
     },
     "CSS": {
-        "type": "Frontend",
+        "type": "Styling Language",
         "category": "Web Development",
         "description": "A stylesheet language responsible for visual representation and formatting of HTML documents, enabling separation of concerns between content and presentation.",
         "patterns": [[{ "LOWER": { "FUZZY1": "css" } }]],
@@ -104,21 +107,21 @@
     },
     "Python": {
         "type": "Programming Language",
-        "category": "Backend",
+        "category": "Backend Programming Languages",
         "description": "A versatile, dynamically-typed programming language suitable for web development, scientific computing, artificial intelligence, and data science.",
         "patterns": [[{ "LOWER": { "FUZZY1": "python" } }]],
         "score": 7.5
     },
     "Java": {
         "type": "Programming Language",
-        "category": "Backend",
+        "category": "Backend Programming Languages",
         "description": "A versatile, statically-typed programming language supporting concurrency, multithreading, and diverse execution environments.",
         "patterns": [[{ "LOWER": { "FUZZY1": "java" } }]],
         "score": 7.5
     },
     "C#": {
         "type": "Programming Language",
-        "category": "Backend",
+        "category": "Backend Programming Languages",
         "description": "A statically-typed, object-oriented programming language, primarily utilized for Windows applications and games development.",
         "patterns": [
             [{ "LOWER": "c" }, { "LOWER": "#" }],
@@ -129,7 +132,7 @@
     },
     "C++": {
         "type": "Programming Language",
-        "category": "System Programming",
+        "category": "System Programming Languages",
         "description": "A high-performance, statically-typed programming language, predominantly employed for operating systems, drivers, and game engines.",
         "patterns": [
             [{ "LOWER": "c" }, { "LOWER": "++" }],
@@ -140,42 +143,49 @@
     },
     "PHP": {
         "type": "Programming Language",
-        "category": "Backend",
+        "category": "Backend Programming Languages",
         "description": "A loosely-typed, server-side scripting language, extensively leveraged for web development due to seamless interaction with HTML and databases.",
         "patterns": [[{ "LOWER": "php" }]],
         "score": 7.5
     },
     "Go": {
         "type": "Programming Language",
-        "category": "Backend",
+        "category": "Backend Programming Languages",
         "description": "A statically-typed, compiled programming language emphasizing simplicity, efficiency, and strong support for concurrent programming.",
         "patterns": [[{ "LOWER": { "FUZZY1": "golang" } }]],
         "score": 7.5
     },
     "Ruby": {
         "type": "Programming Language",
-        "category": "Backend",
+        "category": "Backend Programming Languages",
         "description": "A dynamically-typed, interpreted programming language prioritizing elegance, readability, and consistency, particularly suited for web development.",
         "patterns": [[{ "LOWER": { "FUZZY1": "ruby" } }]],
         "score": 7.5
     },
     "Swift": {
         "type": "Programming Language",
-        "category": "Mobile Development",
+        "category": "Mobile Programming Languages",
         "description": "A safe, fast, and interactive programming language, specifically crafted for developing macOS, watchOS, tvOS, and iOS applications.",
         "patterns": [[{ "LOWER": { "FUZZY1": "swift" } }]],
         "score": 7.5
     },
     "Kotlin": {
         "type": "Programming Language",
-        "category": "Mobile Development",
+        "category": "Mobile Programming Languages",
         "description": "A modern programming language that runs on the JVM and is fully interoperable with Java. Known for its concise syntax and emphasis on safety, particularly in nullability.",
         "patterns": [[{ "LOWER": { "FUZZY1": "kotlin" } }]],
         "score": 7.5
     },
+    "JavaScript": {
+        "type": "Programming Language",
+        "category": "Frontend Programming Languages",
+        "description": "A versatile, dynamically-typed programming language primarily used for enhancing interactivity in web browsers.",
+        "patterns": [[{ "LOWER": { "FUZZY1": "javascript" } }]],
+        "score": 7.5
+    },
     "TypeScript": {
         "type": "Programming Language",
-        "category": "Frontend",
+        "category": "Frontend Programming Languages",
         "description": "A superset of JavaScript that compiles to clean JavaScript output. It adds optional static typing to the language, enhancing code quality and understandability.",
         "patterns": [
             [{ "LOWER": { "FUZZY1": "typescript" } }],
@@ -185,7 +195,7 @@
     },
     "NodeJS": {
         "type": "Runtime Environment",
-        "category": "Backend",
+        "category": "Backend Programming Languages",
         "description": "An open-source, cross-platform JavaScript runtime environment that executes JavaScript code outside of a web browser. Node.js lets developers use JavaScript to write command-line tools and for server-side scripting.",
         "patterns": [
             [{ "LOWER": { "FUZZY1": "nodejs" } }],
@@ -195,7 +205,7 @@
     },
     "React": {
         "type": "JavaScript Library",
-        "category": "Frontend",
+        "category": "JavaScript Frameworks/Libraries",
         "description": "An open-source JavaScript library for building user interfaces, particularly single-page applications. It's known for its fast rendering, using a virtual DOM to minimize the performance cost of updates.",
         "patterns": [
             [{ "LOWER": { "FUZZY1": "react" } }],
@@ -205,21 +215,21 @@
     },
     "Angular": {
         "type": "Web Framework",
-        "category": "Frontend",
+        "category": "JavaScript Frameworks/Libraries",
         "description": "A platform and framework for building single-page client applications using HTML and TypeScript. Angular provides developers with an efficient way to build desktop and mobile applications.",
         "patterns": [[{ "LOWER": { "FUZZY1": "angular" } }]],
         "score": 10
     },
     "Vue": {
         "type": "JavaScript Framework",
-        "category": "Frontend",
+        "category": "JavaScript Frameworks/Libraries",
         "description": "A progressive JavaScript framework for building user interfaces. It is designed from the ground up to be incrementally adoptable, and can also function as a web application framework capable of powering advanced single-page applications.",
         "patterns": [[{ "LOWER": "vue" }]],
         "score": 10
     },
     "Next.js": {
         "type": "React Framework",
-        "category": "Frontend",
+        "category": "JavaScript Frameworks/Libraries",
         "description": "A React front-end development web framework that enables functionality such as server-side rendering and generating static websites for React-based web applications.",
         "patterns": [
             [{ "LOWER": "next" }, { "LOWER": "js" }],
@@ -229,10 +239,30 @@
         ],
         "score": 10
     },
-
+    "Django": {
+      "type": "Web Framework",
+      "category": "Backend Web Frameworks",
+      "description": "A high-level Python web framework that encourages rapid development and clean, pragmatic design. It takes care of much of the hassle of web development, so you can focus on writing your app without needing to reinvent the wheel.",
+      "patterns": [[{ "LOWER": { "FUZZY1": "django" } }]],
+      "score": 10
+    },
+    "Flask": {
+        "type": "Web Framework",
+        "category": "Backend Web Frameworks",
+        "description": "A micro web framework written in Python. It is designed to make getting started quick and easy, with the ability to scale up to complex applications.",
+        "patterns": [[{ "LOWER": { "FUZZY1": "flask" } }]],
+        "score": 9
+    },
+    "FastAPI": {
+        "type": "Web Framework",
+        "category": "Backend Web Frameworks",
+        "description": "A modern, fast (high-performance), web framework for building APIs with Python based on standard Python type hints.",
+        "patterns": [[{ "LOWER": { "FUZZY1": "fastapi" } }]],
+        "score": 9
+    },
     "Spring": {
         "type": "Framework",
-        "category": "Backend",
+        "category": "Backend Web Frameworks",
         "description": "An application framework and inversion of control container for the Java platform. It provides comprehensive infrastructure support for developing Java applications.",
         "patterns": [
             [{ "LOWER": { "FUZZY1": "spring" } }],
@@ -241,30 +271,9 @@
         ],
         "score": 10
     },
-    "Django": {
-        "type": "Web Framework",
-        "category": "Backend",
-        "description": "A high-level Python web framework that encourages rapid development and clean, pragmatic design. It takes care of much of the hassle of web development, so you can focus on writing your app without needing to reinvent the wheel.",
-        "patterns": [[{ "LOWER": { "FUZZY1": "django" } }]],
-        "score": 10
-    },
-    "Flask": {
-        "type": "Web Framework",
-        "category": "Backend",
-        "description": "A micro web framework written in Python. It is designed to make getting started quick and easy, with the ability to scale up to complex applications.",
-        "patterns": [[{ "LOWER": { "FUZZY1": "flask" } }]],
-        "score": 9
-    },
-    "FastAPI": {
-        "type": "Web Framework",
-        "category": "Backend",
-        "description": "A modern, fast (high-performance), web framework for building APIs with Python based on standard Python type hints.",
-        "patterns": [[{ "LOWER": { "FUZZY1": "fastapi" } }]],
-        "score": 9
-    },
     "Express.js": {
         "type": "Web Framework",
-        "category": "Backend",
+        "category": "Backend Web Frameworks",
         "description": "A web application framework for Node.js, released as free and open-source software. It is designed for building web applications and APIs.",
         "patterns": [
             [{ "LOWER": { "FUZZY1": "express" } }, { "LOWER": "js" }],
@@ -277,7 +286,7 @@
     },
     "Ruby on Rails": {
         "type": "Web Framework",
-        "category": "Backend",
+        "category": "Backend Web Frameworks",
         "description": "A web application framework written in Ruby. It is designed to make programming web applications easier.",
         "patterns": [
             [{ "LOWER": { "FUZZY1": "ruby on rails" } }],
@@ -291,7 +300,7 @@
     },
     "ASP.NET": {
         "type": "Web Framework",
-        "category": "Backend",
+        "category": "Backend Web Frameworks",
         "description": "A web application framework for C#, developed and marketed by Microsoft, designed to build dynamic web sites, web applications, and web services.",
         "patterns": [
             [{ "LOWER": { "FUZZY1": "asp.net" } }],
@@ -301,7 +310,7 @@
     },
     "Redux": {
         "type": "JavaScript Library",
-        "category": "Frontend",
+        "category": "JavaScript Frameworks/Libraries",
         "description": "Redux is a predictable state container for JavaScript apps. It helps you write applications that behave consistently, run in different environments (client, server, and native), and are easy to test. Centralizing your application's state and logic enables powerful capabilities like undo/redo, state persistence, and more.",
         "patterns": [[{ "LOWER": { "FUZZY1": "redux" } }]],
         "score": 9
@@ -312,18 +321,17 @@
         "description": "Laravel is a PHP framework for web application development. It provides an elegant syntax and a set of tools and libraries that make it easy to build modern, robust, and maintainable web applications.",
         "patterns": [[{ "LOWER": { "FUZZY1": "laravel" } }]],
         "score": 9
-    },
-
+      },
     "Bootstrap": {
-        "type": "CSS Framework",
-        "category": "UI Design",
-        "description": "Bootstrap is a free and open-source CSS framework directed at responsive, mobile-first front-end web development. It contains HTML, CSS and JavaScript-based design templates for typography, forms, buttons, navigation, and other interface components.",
-        "patterns": [[{ "LOWER": { "FUZZY1": "bootstrap" } }]],
-        "score": 9
+      "type": "CSS Framework",
+      "category": "UI Libraries/Frameworks",
+      "description": "Bootstrap is a free and open-source CSS framework directed at responsive, mobile-first front-end web development. It contains HTML, CSS and JavaScript-based design templates for typography, forms, buttons, navigation, and other interface components.",
+      "patterns": [[{ "LOWER": { "FUZZY1": "bootstrap" } }]],
+      "score": 9
     },
     "Tailwind CSS": {
         "type": "Utility-First CSS Framework",
-        "category": "UI Design",
+        "category": "UI Libraries/Frameworks",
         "description": "Tailwind CSS is a utility-first CSS framework for rapidly building custom user interfaces. It is a highly customizable, low-level CSS framework that gives you all of the building blocks you need to build bespoke designs without any annoying opinionated styles you have to fight to override.",
         "patterns": [
             [{ "TEXT": { "FUZZY1": "tailwind css" } }],
@@ -333,7 +341,7 @@
     },
     "Material-UI": {
         "type": "Component Library",
-        "category": "UI Design",
+        "category": "UI Libraries/Frameworks",
         "description": "Material-UI is a React UI framework that provides a comprehensive suite of UI components.",
         "patterns": [
             [{ "LOWER": { "FUZZY1": "material ui" } }],
@@ -341,10 +349,10 @@
         ],
         "score": 9
     },
-
+    
     "AWS": {
         "type": "Cloud Computing",
-        "category": "Cloud Service Provider",
+        "category": "Cloud Service Providers",
         "description": "Amazon Web Services offers reliable, scalable, and inexpensive cloud computing services. It's the world's most comprehensive and broadly adopted cloud platform, offering over 175 fully-featured services from data centers globally.",
         "patterns": [
             [{ "LOWER": "aws" }],
@@ -354,7 +362,7 @@
     },
     "Azure": {
         "type": "Cloud Computing",
-        "category": "Cloud Service Provider",
+        "category": "Cloud Service Providers",
         "description": "Microsoft Azure is a cloud computing service for building, testing, deploying, and managing applications and services through Microsoft-managed data centers. It provides software as a service (SaaS), platform as a service (PaaS), and infrastructure as a service (IaaS).",
         "patterns": [
             [{ "LOWER": { "FUZZY1": "azure" } }],
@@ -364,7 +372,7 @@
     },
     "GoogleCloud": {
         "type": "Cloud Computing",
-        "category": "Cloud Service Provider",
+        "category": "Cloud Service Providers",
         "description": "Google Cloud Platform, offered by Google, is a suite of cloud computing services that runs on the same infrastructure that Google uses internally for its end-user products, such as Google Search, Gmail, file storage, and YouTube.",
         "patterns": [
             [
@@ -393,13 +401,23 @@
                 { "LOWER": { "FUZZY1": "actions" } }
             ]
         ],
-        "score": 9
+        "score": 10
     },
     "Jenkins": {
         "type": "Automation Server",
         "category": "CI/CD",
         "description": "An open-source automation server that enables developers to build, test, and deploy their software automatically.",
         "patterns": [[{ "LOWER": { "FUZZY1": "jenkins" } }]],
+        "score": 9
+    },
+    "CircleCI": {
+        "type": "Continuous Integration Tool",
+        "category": "CI/CD",
+        "description": "CircleCI is a continuous integration and continuous delivery platform that helps software teams work smarter, faster.",
+        "patterns": [
+          [{ "LOWER": { "FUZZY1": "circleci" } }],
+          [{ "LOWER": { "FUZZY1": "circle" } }, { "LOWER": "ci" }]
+        ],
         "score": 9
     },
     "Terraform": {
@@ -440,7 +458,7 @@
         "patterns": [[{ "LOWER": { "FUZZY1": "helm" } }]],
         "score": 9
     },
-
+    
     "GraphQL": {
         "type": "Query Language",
         "category": "API Development",
@@ -505,7 +523,7 @@
         ],
         "score": 8
     },
-
+    
     "User Interface": {
         "type": "Frontend",
         "category": "Requirement",
@@ -522,7 +540,7 @@
             [{ "LOWER": "user" }, { "LOWER": { "FUZZY1": "interface" } }],
             [{ "LOWER": { "FUZZY1": "responsive" } }]
         ],
-        "description": "Refers to the design and layout of the interface through which users interact with web applications.",
+        "description": "Refers to the design and layout of the interface through which users interact with web applications. This typically involves technologies for building user interfaces, such as JavaScript frameworks/libraries and UI component libraries.",
         "score": 5
     },
     "REST API Development": {
@@ -533,21 +551,22 @@
             "FastAPI",
             "Django",
             "Flask",
-            "ASP.NET"
+            "ASP.NET",
+            "Spring"
         ],
         "patterns": [
             [{ "LOWER": { "FUZZY1": "restful" } }],
             [{ "LOWER": "rest" }, { "LOWER": "api" }],
             [{ "LOWER": "rest" }]
         ],
-        "description": "The process of developing application programming interfaces (APIs) to enable communication between different software applications.",
+        "description": "The process of developing application programming interfaces (APIs) following the Representational State Transfer (REST) architectural style, enabling communication between different software applications.",
         "score": 5
     },
     "RDBMS": {
         "type": "Relational Database Model",
         "category": "Requirement",
         "relatedTechnologies": ["MySQL", "PostgreSQL", "MariaDB", "OracleDB"],
-        "description": "A type of database system that stores data in tables, organized by rows and columns, following the relational model.",
+        "description": "A type of database system that stores data in tables, organized by rows and columns, following the relational model. RDBMS provides a structured approach to managing data, ensuring integrity and consistency through ACID properties.",
         "patterns": [
             [{ "LOWER": { "FUZZY1": "relational" } }, { "LOWER": { "FUZZY1": "database" } }],
             [{ "LOWER": { "FUZZY1": "relational" } }, { "LOWER": "db" }],
@@ -560,14 +579,14 @@
         "type": "Non-Relational Database Model",
         "category": "Requirement",
         "relatedTechnologies": ["MongoDB", "Apache Cassandra"],
-        "description": "A collection of non-relational data models not adhering to the traditional tabular schema, emphasizing scalability, agility, and adaptability.",
+        "description": "A collection of non-relational data models that do not follow the traditional tabular schema, emphasizing scalability, agility, and adaptability. NoSQL databases are designed to handle large volumes of unstructured or semi-structured data.",
         "patterns": [
             [{ "LOWER": { "FUZZY1": "nosql" } }],
             [{ "LOWER": { "FUZZY1": "non-relational" } }, { "LOWER": { "FUZZY1": "database" } }]
         ],
         "score": 5
     },
-
+    
     "Cloud Deployment": {
         "type": "Deployment",
         "category": "Requirement",
@@ -576,7 +595,7 @@
             [{ "LOWER": { "FUZZY1": "cloud" }}, { "LOWER": { "FUZZY1": "deployment" } }],
             [{ "LOWER": { "FUZZY1": "cloud" }}, { "LOWER": { "FUZZY1": "provider" } }]
         ],
-        "description": "The process of deploying applications, services, or resources on a cloud platform.",
+        "description": "The process of deploying applications, services, or resources on a cloud platform provided by a cloud service provider. Cloud deployment offers scalability, flexibility, and reduced infrastructure maintenance.",
         "score": 5
     },
     "Version Control System": {
@@ -590,13 +609,13 @@
             ],
             [{ "LOWER": "git" }]
         ],
-        "description": "A system that records changes to a file or set of files over time so that you can recall specific versions later.",
+        "description": "A system that records changes to a file or set of files over time, allowing developers to collaborate on code, track changes, and revert to previous versions if needed. Version control systems like Git play a crucial role in software development workflows.",
         "score": 5
     },
     "CI/CD": {
         "type": "DevOps Practices",
         "category": "Requirement",
-        "relatedTechnologies": ["GitHub Actions","Docker", "Kubernetes"],
+        "relatedTechnologies": ["GitHub Actions","Jenkins","CircleCI"],
         "patterns": [
             [
                 { "LOWER": "continuous" },
