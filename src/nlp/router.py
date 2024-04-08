@@ -82,22 +82,19 @@ async def match_blueprint_endpoint(recommendations: List[Recommendation], jwt_da
     Matches recommendations with blueprints and returns a list of matched blueprints.
 
     Args:
-      recommendations (List[Recommendation]): A list of recommendations to be matched with blueprints.
-      jwt_data (JWTData, optional): JWT data obtained from the request. Defaults to Depends(parse_jwt_user_data).
+        recommendations (List[Recommendation]): A list of recommendations to be matched with blueprints.
+        jwt_data (JWTData, optional): JWT data obtained from the request. Defaults to Depends(parse_jwt_user_data).
 
     Returns:
-      List[BlueprintMatch]: A list of BlueprintMatch objects containing the matched blueprints.
+        List[BlueprintMatch]: A list of BlueprintMatch objects containing the matched blueprints.
     """
-
     blueprints_corpus = await load_blueprints_corpus()
     all_matched_blueprints = []
 
     for recommendation in recommendations:
-        matched_blueprints = match_blueprints([recommendation.model_dump()], blueprints_corpus)
+      matched_blueprints = match_blueprints([recommendation.model_dump()], blueprints_corpus)
+      if matched_blueprints:
+          all_matched_blueprints.extend(matched_blueprints)
 
-        # Construct BlueprintMatch correctly with the list of matched blueprints
-        matched_blueprint_object = BlueprintMatch(matched_blueprints=[bp for _, bps in matched_blueprints.items() for bp in bps])
+    return [BlueprintMatch(matched_blueprints=all_matched_blueprints) ] # Add other required fields
 
-        all_matched_blueprints.append(matched_blueprint_object)
-
-    return all_matched_blueprints
