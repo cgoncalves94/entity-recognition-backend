@@ -79,8 +79,8 @@ tolerations: []
 # Environment variables to be injected as configuration files in containers / pods
 secrets:
   ENVIRONMENT: staging
-  DATABASE_URL: mongodb+srv://
-  DATABASE_NAME: t***
+  DATABASE_URL: mongodb+srv://cgoncalves:cgoncalves94@cluster0.fii4tod.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+  DATABASE_NAME: bsc_computing_project
   JWT_SECRET: s***
   JWT_ALG: HS256
   JWT_EXP: 21000
