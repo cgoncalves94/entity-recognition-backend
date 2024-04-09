@@ -1,4 +1,4 @@
-name: "Entity Dev Manual Deployment (ers-dev.warestack.com)"
+name: "Dev Manual Deployment (ers-dev.warestack.com)"
 run-name: "(ers-dev.warestack.com) Manual Deployment"
 
 on: workflow_dispatch
