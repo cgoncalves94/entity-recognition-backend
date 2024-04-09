@@ -408,7 +408,7 @@
         "category": "CI/CD",
         "description": "An open-source automation server that enables developers to build, test, and deploy their software automatically.",
         "patterns": [[{ "LOWER": { "FUZZY1": "jenkins" } }]],
-        "score": 9
+        "score": 8
     },
     "CircleCI": {
         "type": "Continuous Integration Tool",
@@ -418,7 +418,7 @@
           [{ "LOWER": { "FUZZY1": "circleci" } }],
           [{ "LOWER": { "FUZZY1": "circle" } }, { "LOWER": "ci" }]
         ],
-        "score": 9
+        "score": 8
     },
     "Terraform": {
         "type": "Tool",
