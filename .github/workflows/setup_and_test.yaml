@@ -1,0 +1,68 @@
+name: "Setup and Test on Push Events"
+on:
+  push:
+    branches:
+      - "feature/*" # matches every branch containing 'feature/'
+      - "bugfix/*" # matches every branch containing 'bugfix/'
+      - "hotfix/*" # matches every branch containing 'hotfix/'
+      - "!main" # excludes main branch
+  release:
+    types: [created]
+
+jobs:
+  build:
+    name: Setup, Build, and Test
+    runs-on: ubuntu-latest
+    services:
+      mongodb:
+        image: mongo
+        env:
+          MONGO_INITDB_DATABASE: bsc_computing_project
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd "echo 'db.runCommand("ping").ok' | mongosh --quiet"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+          --name mongo_container
+    env:
+      JOB_STATUS: succeeded
+      DATABASE_URL: mongodb://localhost:27017
+      DATABASE_NAME: bsc_computing_project
+
+
+    strategy:
+      matrix:
+        # Config the virtual env - Python version 3.11 will be used only.
+        python-version: [ "3.11" ]
+
+    # Add "id-token" with the intended permissions.
+    permissions:
+      contents: "read"
+      id-token: "write"
+
+    steps:
+      # Checkout GitHub branch's config
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      # Set up the Python version
+      - name: Set up the Python version ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+          architecture: "x64"
+          cache: 'pip'
+
+      # Install dependencies along with other required packages
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest pytest-cov
+          if [ -f requirements/dev.txt ]; then pip install -r ./requirements/dev.txt; fi
+      
+      # Run test and output results in JUnit format and parts that lack test coverage
+      - name: Run tests
+        run: |
+          pytest --doctest-modules --junitxml=junit/test-results.xml --cov=src --cov-report=xml --cov-report=html
