@@ -18,8 +18,6 @@ class Config(BaseSettings):
 
     ENVIRONMENT: Environment = Environment.PRODUCTION
 
-    SENTRY_DSN: str | None = None
-
     CORS_ORIGINS: list[str]
     CORS_ORIGINS_REGEX: str | None = None
     CORS_HEADERS: list[str]
