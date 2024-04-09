@@ -80,13 +80,14 @@ tolerations: []
 secrets:
   ENVIRONMENT: staging
   PORT: 8000
-  DATABASE_URL: "mongodb+srv://cgoncalves:cgoncalves94@cluster0.fii4tod.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+  DATABASE_URL: mongodb+srv://cgoncalves:cgoncalves94@cluster0.fii4tod.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
   DATABASE_NAME: bsc_computing_project
   JWT_SECRET: s***
   JWT_ALG: HS256
   JWT_EXP: 21000
   SITE_DOMAIN: 127.0.0.1
   SECURE_COOKIES: false
+  SENTRY_DSN: test***
   CORS_HEADERS: ["*"]
   CORS_ORIGINS: ["http://localhost:3000","http://127.0.0.1:3000"]
   MODEL_NAME: MaartenGr/BERTopic_Wikipedia
