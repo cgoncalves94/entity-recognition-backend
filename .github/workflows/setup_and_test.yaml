@@ -1,4 +1,4 @@
-name: "Build and test on push events"
+name: "Setup and Test on Push Events"
 on:
   push:
     branches:
@@ -13,8 +13,24 @@ jobs:
   build:
     name: Setup, Build, and Test
     runs-on: ubuntu-latest
+    services:
+      mongodb:
+        image: mongo
+        env:
+          MONGO_INITDB_DATABASE: bsc_computing_project
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd "echo 'db.runCommand("ping").ok' | mongosh --quiet"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+          --name mongo_container
     env:
       JOB_STATUS: succeeded
+      DATABASE_URL: mongodb://localhost:27017
+      DATABASE_NAME: bsc_computing_project
+
 
     strategy:
       matrix:
