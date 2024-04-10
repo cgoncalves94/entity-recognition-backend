@@ -61,11 +61,11 @@ healthChecks:
 
 resources:
   limits:
-    cpu: 800m
-    memory: 2048Mi
+    cpu: 1600m
+    memory: 4Gi
   requests:
     cpu: 400m
-    memory: 512Mi
+    memory: 1Gi
 
 autoscaling:
   enabled: false
