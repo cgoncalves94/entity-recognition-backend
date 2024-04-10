@@ -1,6 +1,8 @@
 from typing import Any
 
-from fastapi import APIRouter, BackgroundTasks, Depends, Response, status
+from fastapi import APIRouter, BackgroundTasks,Depends, Response, status
+from fastapi.security import OAuth2PasswordRequestForm
+
 
 from src.auth import jwt, service, utils
 from src.auth.dependencies import (
@@ -70,6 +72,33 @@ async def auth_user(auth_data: AuthUser, response: Response) -> AccessTokenRespo
 
     response.set_cookie(**utils.get_refresh_token_settings(refresh_token_value))
 
+    return AccessTokenResponse(
+        access_token=jwt.create_access_token(user=user),
+        refresh_token=refresh_token_value,
+    )
+    
+@router.post("/users/swagger-auth", response_model=AccessTokenResponse)
+async def swagger_auth(
+    response: Response,
+    form_data: OAuth2PasswordRequestForm = Depends()
+) -> AccessTokenResponse:
+    """
+    Authenticate a user for Swagger UI authorization.
+    
+    Parameters:
+    - response: HTTP response object.
+    - form_data: Authentication data of the user (form data format).
+    
+    Returns:
+    - An AccessTokenResponse object containing the access and refresh tokens.
+    """
+    user = await service.authenticate_user(AuthUser(
+        email=form_data.username,  # Use the username as the email
+        username=form_data.username,
+        password=form_data.password,
+    ))
+    refresh_token_value = await service.create_refresh_token(user_id=user["_id"])
+    response.set_cookie(**utils.get_refresh_token_settings(refresh_token_value))
     return AccessTokenResponse(
         access_token=jwt.create_access_token(user=user),
         refresh_token=refresh_token_value,
