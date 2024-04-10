@@ -193,7 +193,7 @@
         ],
         "score": 7.5
     },
-    "NodeJS": {
+    "Node.js": {
         "type": "Runtime Environment",
         "category": "Backend Programming Languages",
         "description": "An open-source, cross-platform JavaScript runtime environment that executes JavaScript code outside of a web browser. Node.js lets developers use JavaScript to write command-line tools and for server-side scripting.",
