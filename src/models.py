@@ -1,4 +1,5 @@
 from datetime import datetime
+import json
 from typing import Any
 from zoneinfo import ZoneInfo
 
@@ -29,12 +30,14 @@ class CustomModel(BaseModel):
 
     @model_validator(mode="before")
     @classmethod
-    def set_null_microseconds(cls, data: dict[str, Any]) -> dict[str, Any]:
+    def set_null_microseconds(cls, data: dict[str, Any] | bytes) -> dict[str, Any]:
         """
-        Set the microseconds of datetime fields to 0 in the given data dictionary.
+        Set the microseconds of datetime fields to 0 in the given data dictionary or bytes.
         """
-        datetime_fields = {k: v.replace(microsecond=0) for k, v in data.items() if isinstance(v, datetime)}
+        if isinstance(data, bytes):
+            data = json.loads(data.decode('utf-8'))
 
+        datetime_fields = {k: v.replace(microsecond=0) for k, v in data.items() if isinstance(v, datetime)}
         return {**data, **datetime_fields}
 
     def serializable_dict(self, **kwargs):
