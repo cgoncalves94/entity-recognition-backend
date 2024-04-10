@@ -29,21 +29,25 @@ def get_application() -> FastAPI:
 async def process_texts(
     input_text: InputText,
     jwt_data: JWTData = Depends(parse_jwt_user_data),
-    app: FastAPI = Depends(get_application),  # Add dependency to access the app instance
+    app: FastAPI = Depends(get_application),  
 ):
     """
-    Process a list of input texts by extracting technology entities, classifying them into topics,
-    scoring the entities based on relevance, generating recommendations, matching blueprints,
-    and returning the results.
+    Process a list of input texts and generate recommendations based on extracted entities and topic classification.
 
-    Args:
-        input_text (InputText): The input texts to process.
-        jwt_data (JWTData, optional): The JWT data. Defaults to Depends(parse_jwt_user_data).
-        app (FastAPI, optional): The FastAPI application instance. Defaults to Depends(get_application).
+    This endpoint takes a list of input texts, extracts technology entities from each text, classifies the texts into topics
+    using a pre-trained BERTopic model, and generates recommendations based on the extracted entities and their relevance to
+    the identified topics.
+
+    Parameters:
+    - input_text : The input texts to process.
+    - jwt_data: JWT data of the authenticated user.
+    - app: The FastAPI application instance. 
 
     Returns:
-        List[Dict]: A list of dictionaries containing the processed results for each input text.
+    - A list of Recommendation objects containing the processed results for each input text. 
+    Each Recommendation object includes the input text, predicted topic name, extracted entities, and generated recommendations.
     """
+
     tech_entities = await load_tech_entities()  # Load technology entities from a JSON file
 
     matcher = initialize_matcher_with_patterns(tech_entities)  # Initialize a spaCy Matcher object with patterns for tech entities
@@ -79,22 +83,26 @@ async def process_texts(
 @router.post("/match-blueprints/", response_model=List[BlueprintMatch])
 async def match_blueprint_endpoint(recommendations: List[Recommendation], jwt_data: JWTData = Depends(parse_jwt_user_data)):
     """
-    Matches recommendations with blueprints and returns a list of matched blueprints.
+    Match the provided recommendations with blueprints in the blueprints corpus.
 
-    Args:
-        recommendations (List[Recommendation]): A list of recommendations to be matched with blueprints.
-        jwt_data (JWTData, optional): JWT data obtained from the request. Defaults to Depends(parse_jwt_user_data).
+    This endpoint takes a list of recommendations and matches them with relevant blueprints from the blueprints corpus.
+    It returns a list of BlueprintMatch objects containing the matched blueprints for each recommendation.
+
+    Parameters:
+    - A list of Recommendation objects to match with blueprints.
+    - jwt_data: JWT data of the authenticated user.
 
     Returns:
-        List[BlueprintMatch]: A list of BlueprintMatch objects containing the matched blueprints.
+    - A list of BlueprintMatch objects containing the matched blueprints for each recommendation.
     """
+
     blueprints_corpus = await load_blueprints_corpus()
     all_matched_blueprints = []
 
     for recommendation in recommendations:
       matched_blueprints = match_blueprints([recommendation.model_dump()], blueprints_corpus)
       if matched_blueprints:
-          all_matched_blueprints.extend(matched_blueprints)
+        all_matched_blueprints.extend(matched_blueprints)
 
-    return [BlueprintMatch(matched_blueprints=all_matched_blueprints) ] # Add other required fields
+    return [BlueprintMatch(matched_blueprints=all_matched_blueprints)]  
 
