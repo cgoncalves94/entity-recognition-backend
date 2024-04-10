@@ -1,6 +1,7 @@
 
 fly.toml
 
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -42,6 +43,7 @@ pip-delete-this-directory.txt
 
 # Unit test / coverage reports
 htmlcov/
+junit/
 .tox/
 .nox/
 .coverage

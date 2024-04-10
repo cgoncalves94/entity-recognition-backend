@@ -10,7 +10,7 @@ from src.auth.exceptions import AuthorizationFailed, AuthRequired, InvalidToken
 from src.auth.schemas import JWTData
 
 # OAuth2 password bearer scheme for token authentication
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/users/tokens", auto_error=False)
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/users/swagger-auth", auto_error=False)
 
 
 def create_access_token(

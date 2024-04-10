@@ -1,61 +1,65 @@
 [
-    {
-        "name": "node-js-express",
-        "path": "backend/node-js-express",
-        "description": "Backend blueprint collection using Node.js and Express.",
-        "tags": ["Express.js"],
-        "type": "backend",
-        "blueprints": [
-            {
-                "name": "Node.js Express with MongoDB",
-                "path": "backend/node-js-express/node-js-express-mongoose",
-                "description": "Node.js Express backend with Mongoose.",
-                "tags": ["Express.js", "MongoDB"],
-                "type": "backend"
-            },
-            {
-                "name": "Node.js Express with PostgreSQL",
-                "path": "backend/node-js-express/node-js-express-postgresql",
-                "description": "Node.js Express backend with PostgreSQL.",
-                "tags": ["Express.js", "PostgreSQL"],
-                "type": "backend"
-            },
-            {
-                "name": "Node.js Express Starter",
-                "path": "backend/node-js-express/node-js-express-starter",
-                "description": "Starter template for a Node.js Express backend.",
-                "tags": ["Express.js"],
-                "type": "backend"
-            }
-            
-        ]
-    },
-    {
-        "name": "AWS Configure",
-        "path": "ci-cd-and-automation/github/composite-actions/aws-configure",
-        "description": "A composite GitHub Action to configure AWS credentials.",
-        "tags": ["AWS", "GitHub Actions"],
-        "type": "built-in-component"
-    },
-    {
-        "name": "Docker Build and Push",
-        "path": "ci-cd-and-automation/github/docker-build-and-push",
-        "description": "A GitHub Composite Action that builds a Docker image from your application and pushes it to a Docker registry.",
-        "tags": ["Docker", "GitHub Actions"],
-        "type": "built-in-component"
-    },
-    {
-        "name": "Helm Install Local Chart",
-        "path": "ci-cd-and-automation/github/helm-install-local-chart",
-        "description": "GitHub Actions to install a Helm chart locally.",
-        "tags": ["Helm", "GitHub Actions"],
-        "type": "built-in-component"
-    },
-    {
-        "name": "AWS Build, Push, and Deploy to EKS with Helm",
-        "path": "ci-cd-and-automation/github/reusable-workflows/aws-build-push-and-deploy-to-eks-with-helm",
-        "description": "Reusable GitHub Actions workflow to build, push, and deploy to EKS using Helm.",
-        "tags": ["AWS", "EKS", "Helm", "GitHub Actions", "CI/CD", "Deployment"],
-        "type": "reusable-workflow"
-    }
+  {
+    "name": "Node.js Express with MongoDB",
+    "path": "backend/node-js-express/node-js-express-mongoose",
+    "description": "This blueprint offers a Node.js Express backend framework integrated with MongoDB using Mongoose for object modeling. It's designed for applications requiring a NoSQL database with flexible schemas and scalability.",
+    "tags": ["Node.js", "Express.js", "MongoDB", "Mongoose", "NoSQL"],
+    "type": "backend"
+  },
+  {
+    "name": "Node.js Express with PostgreSQL",
+    "path": "backend/node-js-express/node-js-express-postgresql",
+    "description": "This blueprint sets up a Node.js Express backend, ready to connect with PostgreSQL. Ideal for applications that need a powerful, open-source relational database with strong integrity, extensibility, and support for SQL.",
+    "tags": ["Node.js", "Express.js", "PostgreSQL", "SQL"],
+    "type": "backend"
+  },
+  {
+    "name": "Node.js Express Starter",
+    "path": "backend/node-js-express/node-js-express-starter",
+    "description": "A foundational starter template for quickly setting up a Node.js Express backend. This blueprint is perfect for developers looking to jumpstart their new project with Express.js, offering essential configurations and a clean structure.",
+    "tags": ["Node.js", "Express.js"],
+    "type": "backend"
+  },
+  {
+    "name": "Flask API Starter",
+    "path": "backend/python-flask/flask-starter",
+    "description": "A blueprint for building RESTful APIs using Python and the Flask web framework. This blueprint provides a solid foundation for creating scalable and maintainable backend services.",
+    "tags": ["Python", "Flask"],
+    "type": "backend"
+  },
+  {
+    "name": "Flask API with MongoDB",
+    "path": "backend/python-flask/flask-mongoengine",
+    "description": "This blueprint combines the power of Python's Flask web framework with MongoDB for building RESTful APIs. It includes a pre-configured setup for connecting to a MongoDB database and provides a starting point for developing backend services.",
+    "tags": ["Python", "Flask", "MongoDB"],
+    "type": "backend"
+  },
+  {
+    "name": "Angular Starter",
+    "path": "frontend/angular",
+    "description": "A blueprint for kickstarting an Angular frontend project. This blueprint includes a basic setup with essential components, routing, and services, allowing developers to quickly begin building interactive and dynamic user interfaces.",
+    "tags": ["Angular", "TypeScript"],
+    "type": "frontend"
+  },
+  {
+    "name": "Next.js with TypeScript",
+    "path": "frontend/next.js",
+    "description": "This blueprint provides a foundation for building server-rendered React applications with Next.js and TypeScript. It includes a basic project structure, TypeScript configuration, and a sample page component.",
+    "tags": ["Next.js", "React", "TypeScript", "Server-side rendering"],
+    "type": "frontend"
+  },
+  {
+    "name": "React with Vite and TypeScript",
+    "path": "frontend/react-vite",
+    "description": "A blueprint for creating React applications using Vite as the build tool and TypeScript for type checking. This blueprint leverages Vite's fast development server and optimized builds, along with TypeScript's static typing, to provide a robust and efficient development experience.",
+    "tags": ["React", "Vite", "TypeScript"],
+    "type": "frontend"
+  },
+  {
+    "name": "Vue with Vite and TypeScript",
+    "path": "frontend/vue-vite",
+    "description": "This blueprint serves as a starting point for building Vue 3 applications with Vite and TypeScript. It includes a basic project structure, TypeScript configuration, and a sample component, enabling developers to create performant and type-safe Vue applications.",
+    "tags": ["Vue", "Vite", "TypeScript"],
+    "type": "frontend"
+  }
 ]

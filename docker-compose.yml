@@ -1,8 +1,8 @@
 version: '3.7'
 services:
   app:
-    container_name: app
-    image: app_image
+    container_name: ers-app
+    image: ers_image
     env_file:
       - .env
     build:

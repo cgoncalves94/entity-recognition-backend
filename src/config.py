@@ -65,7 +65,13 @@ class Config(BaseSettings):
 settings = Config()
 
 # FastAPI app configurations
-app_configs: dict[str, Any] = {"title": "App API"}
+app_configs: dict[str, Any] = {
+    "title": "ERS",
+    "description": "A FastAPI app designed for technology entity recognition, topic classification, "
+                  "technology recommendation, dynamic scoring, and workflows generation",
+}
+
+
 if settings.ENVIRONMENT.is_deployed:
     app_configs["root_path"] = f"/v{settings.APP_VERSION}"
 

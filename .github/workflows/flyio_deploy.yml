@@ -1,34 +1,40 @@
 name: Deploy to Fly.io
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - 'src/**'
-      - 'Dockerfile'
-      - 'tests/**'
+  # Trigger the workflow manually
   workflow_dispatch:
 
 jobs:
   deploy:
-    name: Deploy app
+    name: Deploy Application
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v2
+      # Checkout the repository
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      # Set up Docker Buildx for efficient image building
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
-      - name: Create cache directory
+
+      # Create a cache directory for Docker layers
+      - name: Create Cache Directory
         run: mkdir -p ${{ github.workspace }}/.buildx-cache
-      - name: Cache Docker layers
+
+      # Cache Docker layers to speed up subsequent builds
+      - name: Cache Docker Layers
         uses: actions/cache@v3
         with:
           path: ${{ github.workspace }}/.buildx-cache
           key: ${{ runner.os }}-buildx-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-buildx-
+
+      # Deploy the application to Fly.io
       - name: Deploy to Fly.io
         env:
+          # Set the Fly.io API token from repository secrets
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
         run: |
           curl -L https://fly.io/install.sh | sh
