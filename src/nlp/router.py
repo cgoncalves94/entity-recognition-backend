@@ -29,7 +29,7 @@ def get_application() -> FastAPI:
 async def process_texts(
     input_text: InputText,
     jwt_data: JWTData = Depends(parse_jwt_user_data),
-    app: FastAPI = Depends(get_application),  
+    app: FastAPI = Depends(get_application),
 ):
     """
     Process a list of input texts and generate recommendations based on extracted entities and topic classification.
@@ -41,10 +41,10 @@ async def process_texts(
     Parameters:
     - input_text : The input texts to process.
     - jwt_data: JWT data of the authenticated user.
-    - app: The FastAPI application instance. 
+    - app: The FastAPI application instance.
 
     Returns:
-    - A list of Recommendation objects containing the processed results for each input text. 
+    - A list of Recommendation objects containing the processed results for each input text.
     Each Recommendation object includes the input text, predicted topic name, extracted entities, and generated recommendations.
     """
 
@@ -100,9 +100,8 @@ async def match_blueprint_endpoint(recommendations: List[Recommendation], jwt_da
     all_matched_blueprints = []
 
     for recommendation in recommendations:
-      matched_blueprints = match_blueprints([recommendation.model_dump()], blueprints_corpus)
-      if matched_blueprints:
-        all_matched_blueprints.extend(matched_blueprints)
+        matched_blueprints = match_blueprints([recommendation.model_dump()], blueprints_corpus)
+        if matched_blueprints:
+            all_matched_blueprints.extend(matched_blueprints)
 
-    return [BlueprintMatch(matched_blueprints=all_matched_blueprints)]  
-
+    return [BlueprintMatch(matched_blueprints=all_matched_blueprints)]

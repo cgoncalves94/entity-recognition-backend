@@ -68,7 +68,7 @@ settings = Config()
 app_configs: dict[str, Any] = {
     "title": "ERS",
     "description": "A FastAPI app designed for technology entity recognition, topic classification, "
-                  "technology recommendation, dynamic scoring, and blueprints matching.",
+    "technology recommendation, dynamic scoring, and blueprints matching.",
 }
 
 

@@ -8,6 +8,7 @@ async def blueprints_corpus():
     """Async fixture to load the blueprints_corpus from the JSON file."""
     return await load_blueprints_corpus()
 
+
 @pytest.fixture
 def nlp_output():
     """Fixture for the NLP output with extracted entities and recommendations."""
@@ -15,14 +16,15 @@ def nlp_output():
         {
             "extracted_entities": [
                 {"entity_name": "TypeScript", "category": "Frontend Programming Languages"},
-                {"entity_name": "React", "category": "JavaScript Frameworks/Libraries"}
+                {"entity_name": "React", "category": "JavaScript Frameworks/Libraries"},
             ],
             "recommendations": [
                 {"category": "Frontend Programming Languages", "recommendation": "Express.js"},
-                {"category": "JavaScript Frameworks/Libraries", "recommendation": "React"}
-            ]
+                {"category": "JavaScript Frameworks/Libraries", "recommendation": "React"},
+            ],
         }
     ]
+
 
 @pytest.mark.asyncio
 async def test_match_blueprints(blueprints_corpus, nlp_output):

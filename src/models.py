@@ -1,5 +1,5 @@
-from datetime import datetime
 import json
+from datetime import datetime
 from typing import Any
 from zoneinfo import ZoneInfo
 
@@ -35,7 +35,7 @@ class CustomModel(BaseModel):
         Set the microseconds of datetime fields to 0 in the given data dictionary or bytes.
         """
         if isinstance(data, bytes):
-            data = json.loads(data.decode('utf-8'))
+            data = json.loads(data.decode("utf-8"))
 
         datetime_fields = {k: v.replace(microsecond=0) for k, v in data.items() if isinstance(v, datetime)}
         return {**data, **datetime_fields}
