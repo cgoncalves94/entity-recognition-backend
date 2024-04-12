@@ -70,7 +70,7 @@ async def root():
     Root endpoint of the FastAPI application.
     Returns a welcome message.
     """
-    return {"message": "Welcome to my FastAPI application!"}
+    return {"message": "A FastAPI app designed for technology entity recognition, topic classification, technology recommendation, dynamic scoring, and blueprints matching."}
 
 
 # Define the healthcheck endpoint
