@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Any
 
 from fastapi import Depends
@@ -30,7 +30,8 @@ def create_access_token(
     """
     jwt_data = {
         "sub": str(user["_id"]),
-        "exp": datetime.utcnow() + expires_delta,
+        "exp": datetime.now(timezone.utc) + expires_delta,
+
         "is_admin": user.get("is_admin", False),
     }
 

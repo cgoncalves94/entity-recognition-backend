@@ -1,5 +1,5 @@
 import uuid
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Any, Optional
 
 from bson import Binary
@@ -27,7 +27,7 @@ async def create_user(user: AuthUser) -> Optional[dict[str, Any]]:
     user_data = {
         "email": user.email,
         "password": hash_password(user.password),
-        "created_at": datetime.utcnow(),
+        "created_at": datetime.now(timezone.utc),
     }
     result = await Database.db["auth_user"].insert_one(user_data)
     if result.inserted_id:
@@ -90,7 +90,7 @@ async def create_refresh_token(*, user_id: str, refresh_token: str = None) -> st
     token_data = {
         "uuid": Binary(uuid.uuid4().bytes, subtype=UuidRepresentation.STANDARD),
         "refresh_token": refresh_token,
-        "expires_at": datetime.utcnow() + timedelta(seconds=auth_config.REFRESH_TOKEN_EXP),
+        "expires_at": datetime.now(timezone.utc) + timedelta(seconds=auth_config.REFRESH_TOKEN_EXP),
         "user_id": user_id,
     }
     await Database.db["refresh_tokens"].insert_one(token_data)
