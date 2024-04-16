@@ -19,14 +19,13 @@ This FastAPI application is designed for technology entity recognition, topic cl
 2. **Docker Build**: Containerizes the application, ensuring environmental consistency.
 3. **Fly.io Deployment**: Deploys the Dockerized application to Fly.io, leveraging its robust platform for running containerized applications.
 
-For more details on our CI/CD process, refer to the `.github/workflows/deploy.yml` file in our repository.
+For more details on our CI/CD process, refer to the `.github/workflows/flyio_deploy.yml` file in our repository.
 
 ## Installation and Running the Application
 
 To run the application using Docker, ensure Docker and docker-compose are installed on your system. Then execute:
 
 ```bash
-docker network create app_main
 docker-compose up -d --build
 ```
 This command builds the Docker image and starts the service. The application can be accessed at http://localhost:16000 with API documentation available at http://localhost:16000/docs.
