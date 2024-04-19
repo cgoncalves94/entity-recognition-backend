@@ -8,6 +8,7 @@ jobs:
   deploy:
     name: Deploy Application
     runs-on: ubuntu-latest
+
     steps:
       # Checkout the repository
       - name: Checkout Repository
@@ -17,9 +18,24 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
-      # Create a cache directory for Docker layers
-      - name: Create Cache Directory
-        run: mkdir -p ${{ github.workspace }}/.buildx-cache
+      # Cache Docker layers to speed up subsequent builds
+      - name: Cache Docker Layers
+        uses: actions/cache@v3
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+
+      # Build the Docker image with caching
+      - name: Build Docker Image
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          push: false
+          load: true
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new
 
       # Deploy the application to Fly.io
       - name: Deploy to Fly.io
@@ -30,13 +46,10 @@ jobs:
           curl -L https://fly.io/install.sh | sh
           export FLYCTL_INSTALL="/home/runner/.fly"
           export PATH="$FLYCTL_INSTALL/bin:$PATH"
-          flyctl deploy --dockerfile ./Dockerfile --remote-only -a tech-entity-recognition --build-arg BUILDKIT_INLINE_CACHE=1 --build-arg BUILDKIT_CACHE_DIR=${{ github.workspace }}/.buildx-cache
-
-      # Cache Docker layers to speed up subsequent builds
-      - name: Cache Docker Layers
-        uses: actions/cache@v3
-        with:
-          path: ${{ github.workspace }}/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-buildx-
+          flyctl deploy --remote-only -a tech-entity-recognition
+      
+      # Move the cache to the new location for the next run
+      - name: Move Cache
+        run: |
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
