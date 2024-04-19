@@ -1,7 +1,6 @@
 name: Deploy to Fly.io
 
 on:
-  # Trigger the workflow manually
   workflow_dispatch:
 
 jobs:
@@ -10,15 +9,20 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout the repository
       - name: Checkout Repository
         uses: actions/checkout@v2
 
-      # Set up Docker Buildx for efficient image building
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
+        with:
+          install: true
 
-      # Cache Docker layers to speed up subsequent builds
+      - name: Docker Login
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
       - name: Cache Docker Layers
         uses: actions/cache@v3
         with:
@@ -27,29 +31,21 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-buildx-
 
-      # Build the Docker image with caching
-      - name: Build Docker Image
+      - name: Build and push
         uses: docker/build-push-action@v3
         with:
           context: .
-          push: false
-          load: true
+          file: ./Dockerfile
+          push: true
+          tags: cgoncalves94/tech-entity-recognition:latest
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
 
-      # Deploy the application to Fly.io
       - name: Deploy to Fly.io
         env:
-          # Set the Fly.io API token from repository secrets
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
         run: |
           curl -L https://fly.io/install.sh | sh
           export FLYCTL_INSTALL="/home/runner/.fly"
           export PATH="$FLYCTL_INSTALL/bin:$PATH"
-          flyctl deploy --remote-only -a tech-entity-recognition
-      
-      # Move the cache to the new location for the next run
-      - name: Move Cache
-        run: |
-          rm -rf /tmp/.buildx-cache
-          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+          flyctl deploy --image cgoncalves94/tech-entity-recognition:latest --remote-only -a tech-entity-recognition
