@@ -28,7 +28,7 @@ jobs:
           --name mongo_container
     env:
       JOB_STATUS: succeeded
-      DATABASE_URL: mongodb://locahost:27017
+      DATABASE_URL: mongodb://localhost:27017
       DATABASE_NAME: bsc_computing_project
 
 
