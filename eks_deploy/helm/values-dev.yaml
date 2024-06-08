@@ -80,7 +80,7 @@ tolerations: []
 secrets:
   ENVIRONMENT: "staging"
   PORT: 8000
-  DATABASE_URL: ""
+  DATABASE_URL: "mongodb+srv://cgoncalves:cgoncalves94@cluster0.fii4tod.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
   DATABASE_NAME: "bsc_computing_project"
   JWT_SECRET: "s***"
   JWT_ALG: "HS256"
