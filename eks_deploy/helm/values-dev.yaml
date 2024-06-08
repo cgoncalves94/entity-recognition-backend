@@ -93,6 +93,7 @@ secrets:
   CORS_ORIGINS:
     - "http://localhost:3000"
     - "http://127.0.0.1:3000"
+    - "https://cgoncalves94.github.io/entity-recognition-frontend"
   MODEL_NAME: "MaartenGr/BERTopic_Wikipedia"
   CORPUS_DIR: "data/tech_entities.json"
   BLUEPRINTS_DIR: "data/blueprints_metadata.json"
