@@ -2,13 +2,15 @@ name: "Dev Manual Deployment (ers-dev.warestack.com)"
 run-name: "(ers-dev.warestack.com) Manual Deployment"
 
 on:
-  workflow_dispatch:  
-  pull_request:       
-    branches:
-      - main         
+  workflow_dispatch:
+  pull_request:
     paths:
-      - 'src/**'     
-      - '.github/workflows/**'  
+      - 'src/**'
+      - '.github/workflows/**'
+  push:
+    paths:
+      - 'src/**'
+      - '.github/workflows/**'
 
 jobs:
   deploy:
