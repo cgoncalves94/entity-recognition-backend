@@ -1,6 +1,6 @@
 # Tech Entity Recognition
 
-This FastAPI application is designed for technology entity recognition, topic classification, technology recommendation, dynamic scoring, and blueprint matching. It leverages Natural Language Processing (NLP) and Machine Learning (ML) techniques, utilizing libraries and models such as spaCy, BERTopic, and sentence-transformers, all within a secure and efficient web service.
+This FastAPI application is designed for technology entity recognition, topic classification, technology recommendation, dynamic scoring, and blueprint matching. It leverages Natural Language Processing (NLP) and Machine Learning (ML) techniques, utilizing libraries and models such as spaCy, BERTopic, and sentence-transformers, all within a secure and efficient web service. This project was developed as part of my BSc Computer Science degree at Birkbeck University.
 
 ## Key Features
 
@@ -68,6 +68,16 @@ docker compose exec app pytest
 This command executes the test suite, ensuring that all functionalities work as expected within the Dockerized application.
 
 
-## Conclusion
+## Contributing
 
-The Tech Entity Recognition project has evolved significantly, incorporating Docker for deployment, enhancing security with JWT authentication, improving NLP functionalities, and adding blueprint matching capabilities. These advancements provide a solid foundation for further development and innovation.
+Contributions are welcome! Please follow these steps:
+
+1. Fork the repository on GitHub.
+2. Clone the forked repository to your machine.
+3. Create a new branch for your changes.
+4. Make changes and test.
+5. Submit a pull request with a comprehensive description of changes.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
